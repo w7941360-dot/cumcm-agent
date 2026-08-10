@@ -99,9 +99,11 @@ cumcm-2026/            # 示例目录名，以用户指定为准
 - 建立模型（A 题：机理建模 + 数值方法 + 参数辨识 + 灵敏度/稳定性分析），写明假设、符号、求解方案
 - 🔁 检查点（feedback）：收集用户意见，修订后继续
 
-### 步骤 3 — 编程实现 → `code/main.py` + `RESULTS.md`
+### 步骤 3 — 编程实现 → `code/` + `RESULTS.md`
 - 读 `references/03-编程实现.md`，套用 `templates/RESULTS.md`
+- **引擎选择**：确认用户偏好——本机已装 MATLAB R2025b（`references/10-MATLAB.md`，无头 `matlab -batch`）；也支持 Python；可互补（预处理 Python + 重计算 MATLAB）
 - 实现模型求解并跑出结果，做 5 项可信度校验（Sanity/Consistency/Physical/Prediction/Evaluation）
+- 结果写 CSV/mat（供步骤8 证据预检），图导出 PDF+PNG 成对（进 `figures/`）
 - ✅ 检查点（approve，Type-B 由用户判定）：用户批准后继续
 
 ### 步骤 4 — 图表生成 → `figures/`
