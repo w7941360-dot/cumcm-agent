@@ -23,6 +23,31 @@ description: 全国大学生数学建模竞赛（CUMCM，国赛）全流程自�
 > - **全角引号陷阱**：Windows PowerShell 命令串里的全角引号（U+201C/U+201D）会被自动转成 ASCII 双引号，导致命令被截断/内容损坏。命令行传中文时用「」（U+300C/U+300D）代替；生成中文文件推荐 `python -X utf8 -c "..."` 以三层单引号写内容（避开全角引号/ASCII 双引号/美元符/反引号）。
 > - **终端乱码 ≠ 文件损坏**：终端按 GBK 显示 UTF-8 内容会乱码；校验文件用 Python 按 UTF-8 读回，不能只看终端。
 
+## 环境预置（开始前）
+
+运行流水线前，确认本机已具备以下环境（缺哪个装哪个）。本机（2026-08 实测）已按此清单就绪：Python 3.13.5 + MiKTeX 25.12（xelatex 4.16）+ pandoc 2.12 + Word 16，正式 main.tex 可本地编译。
+
+### 必需
+
+| 用途 | 软件 | 安装 / 校验 |
+|------|------|------------|
+| 求解 / 出图 / 结果文件 | Python 3.13+（Anaconda）+ numpy、scipy、matplotlib、openpyxl、pandas、pillow、pypdf、pypdfium2 | 安装：`pip install numpy scipy matplotlib openpyxl pandas pillow pypdf pypdfium2`；校验：python 可正常 import 上述库 |
+| PDF 论文（中文） | XeLaTeX（MiKTeX 或 TeX Live，含 ctex / xecjk 宏包） | Windows 安装：`winget install MiKTeX.MiKTeX --silent`；配国内镜像与缺包自动安装：`mpm --set-repository=https://mirrors.ustc.edu.cn/CTAN/systems/win32/miktex/tm/packages/`、`initexmf --set-config-value=[MPM]AutoInstall=1`；校验：`xelatex --version` |
+| Word 论文 | pandoc + Microsoft Word | 安装：`winget install JohnMacFarlane.Pandoc`；Word 用 COM 验证 docx 图片渲染 |
+| PDF 合规检查 | pypdf / pypdfium2 | 随 Python 一并安装 |
+
+### 可选
+
+- 编辑器：VS Code + LaTeX Workshop（推荐）；或 TeXstudio；或 Overleaf Community Edition（Docker 自托管）
+- 文献管理：Zotero
+- 在线编译兜底：TeX Live.net / Overleaf（本地 xelatex 不可用时的备选）
+
+### 注意
+
+- PATH 更新只对新终端生效；当前会话可用完整路径调用 xelatex
+- 首次编译会自动补装宏包，依赖 USTC / CTAN 镜像，需联网
+- 论文 PDF 优先本地 xelatex 编译（离线可用）；Word 版用 pandoc + PNG 图，保证 Word 里图片可显示
+
 ## 门禁分级（Acceptance Gate）— 核心原则
 
 来自 ARIS：**循环可以 DRIVE（驱动），不能 ACQUIT（自我宣判无罪）**。Codex 可以驱动流程前进，但绝不能自己宣布"合格/完成"。
@@ -97,7 +122,7 @@ cumcm-2026/            # 示例目录名，以用户指定为准
 ### 步骤 7 — 编译 PDF + 导出 Word
 - 读 `references/06-编译与合规.md`
 - **Word**：用 pandoc 由 LaTeX 导出 `paper/main.docx`（`pandoc main.tex -o main.docx`）——已实测可用
-- **PDF**：优先 **Overleaf**（上传 main.tex + figures/，编译器选 XeLaTeX，下载 main.pdf）；本机有可用 xelatex 时也可本地编译（详见 06 方案 B，注意 Modex 内置 MiKTeX 需先初始化）
+- **PDF**：优先本机本地编译（xelatex，见「环境预置」，本机已装 MiKTeX 25.12）；本地不可用时回退 Overleaf / TeX Live.net（上传 main.tex + figures/，编译器选 XeLaTeX，下载 main.pdf）
 - **合规检查**：跑 `python scripts/compliance_check.py paper [paper/main.pdf]`，要求无 FAIL（摘要≤1页/页码页脚中部/图表居中/每条文献被\\cite/页边距/匿名/图表明细）
 - ✅ 检查点（Type-A）：PDF 与 Word 都成功生成，且合规检查无 FAIL，用户批准进入步骤 8
 
