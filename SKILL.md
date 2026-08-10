@@ -18,6 +18,10 @@ description: 全国大学生数学建模竞赛（CUMCM，国赛）全流程自�
 > - PowerShell 读取：`Get-Content -Encoding UTF8`；写入：`[System.IO.File]::WriteAllText($path, $text, [System.Text.UTF8Encoding]::new($false))`
 > - 或先执行 `chcp 65001` 再操作
 > 不要用默认代码页（GBK）读写，否则中文会乱码。
+>
+> ⚠️ 额外坑（实战踩过）：
+> - **全角引号陷阱**：Windows PowerShell 命令串里的全角引号（U+201C/U+201D）会被自动转成 ASCII 双引号，导致命令被截断/内容损坏。命令行传中文时用「」（U+300C/U+300D）代替；生成中文文件推荐 `python -X utf8 -c "..."` 以三层单引号写内容（避开全角引号/ASCII 双引号/美元符/反引号）。
+> - **终端乱码 ≠ 文件损坏**：终端按 GBK 显示 UTF-8 内容会乱码；校验文件用 Python 按 UTF-8 读回，不能只看终端。
 
 ## 门禁分级（Acceptance Gate）— 核心原则
 
@@ -47,7 +51,8 @@ cumcm-2026/            # 示例目录名，以用户指定为准
 ├── paper/               # 步骤6/7 产出（main.tex / main.pdf / main.docx）
 ├── PAPER_ACCEPTANCE_CONTRACT.md  # 步骤6 动笔前定验收标准
 ├── claims.json          # 步骤8 证据预检输入（关键数字+出处）
-└── COMP_REVIEW.md       # 步骤8 审计记录
+├── COMP_REVIEW.md       # 步骤8 审计记录
+└── materials/           # 支撑材料（步骤8 用 collect_materials.py 生成）
 ```
 
 ## 8 步流水线
@@ -93,7 +98,8 @@ cumcm-2026/            # 示例目录名，以用户指定为准
 - 读 `references/06-编译与合规.md`
 - **Word**：用 pandoc 由 LaTeX 导出 `paper/main.docx`（`pandoc main.tex -o main.docx`）——已实测可用
 - **PDF**：优先 **Overleaf**（上传 main.tex + figures/，编译器选 XeLaTeX，下载 main.pdf）；本机有可用 xelatex 时也可本地编译（详见 06 方案 B，注意 Modex 内置 MiKTeX 需先初始化）
-- ✅ 检查点（Type-A）：PDF 与 Word 都成功生成，且页数/公式/图表引用/匿名/格式检查通过后，用户批准进入步骤 8
+- **合规检查**：跑 `python scripts/compliance_check.py paper [paper/main.pdf]`，要求无 FAIL（摘要≤1页/页码页脚中部/图表居中/每条文献被\\cite/页边距/匿名/图表明细）
+- ✅ 检查点（Type-A）：PDF 与 Word 都成功生成，且合规检查无 FAIL，用户批准进入步骤 8
 
 ### 步骤 8 — 改进循环 → 修订终稿
 - 读 `references/07-改进循环.md`
@@ -102,8 +108,9 @@ cumcm-2026/            # 示例目录名，以用户指定为准
   - 页数/公式渲染/图表引用/匿名/参考文献 逐项机器检查（PDF 与 Word 各查一遍）
 - ② **Type-B 验收**：按 `PAPER_ACCEPTANCE_CONTRACT.md` 逐条核对，**由用户判定**未过项；列出未过项 → 修复 → 重编译 → 复验
 - ③ 可选：若用户提供另一个模型的 API，可做独立审稿（审稿人**直接读原始文件**，不喂摘要/不引导结论）
+- ④ **支撑材料收集**：跑 `python scripts/collect_materials.py <工作区>`，生成 `materials/`（源程序+中间图表+结果数据+附录A/B清单）
 - **停止条件 = Type-A 全过 + 用户验收通过**。Codex 不得以"我觉得改好了"为由停止。
-- 交付：`paper/main.pdf`（参赛提交）+ `paper/main.docx`（Word 版，可套学校模板微调）
+- **交付口径（只交 3 样）**：① `paper/main.docx`（Word 论文）② `paper/main.pdf`（PDF 论文）③ `materials/`（支撑材料文件夹）；其余中间产物留在过程目录不上交
 
 ## 硬性规则
 
@@ -114,5 +121,6 @@ cumcm-2026/            # 示例目录名，以用户指定为准
 - 图表必须黑白可印刷（国赛打印评审）；正确性规则必守，风格规则可商量
 - 论文必须匿名（不出现姓名/学校/指导教师），符合当年页数限制
 - **终稿双格式交付**：PDF（参赛提交）+ Word（`main.docx`，由 LaTeX 经 pandoc 导出；导出的 Word 是内容骨架，最终按学校模板微调）
+- **交付口径 3 样**：Word 论文 + PDF 论文 + 支撑材料文件夹（`materials/`）；参考文献 ≥8 条且每条正文有 \\cite，无官网/组委会条目
 - A 题优先机理建模：守恒/平衡方程 → 数值求解 → 灵敏度与稳定性分析，避免纯数据拟合
 - 完成全部 8 步后，向用户输出：终稿路径（PDF + Word）、关键结果摘要、验收契约判定结果、待人工核对的点
