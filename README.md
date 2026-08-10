@@ -9,7 +9,8 @@
 - **门禁分级**：机器可查（Type-A）自动判定，质量判断（Type-B）由用户判定——"可 DRIVE，不可 ACQUIT"
 - **证据预检**：防编造数字（`scripts/evidence_check.py`，确定性检查论文数字是否真实存在于结果文件）
 - **输入处理**：赛题 PDF 自动提取文本 + 原始数据 xlsx 自动探查（`scripts/process_inputs.py`）
-- **双格式交付**：`main.pdf`（参赛提交）+ `main.docx`（pandoc 从 LaTeX 导出 Word）
+- **双格式交付 + 3 样出口**：Word 论文 + PDF 论文 + 支撑材料文件夹（`materials/`，collect_materials.py 自动收集）
+- **自动合规检查**：`compliance_check.py`（摘要≤1页 / 页码页脚中部 / 图表居中 / 每条文献被\\cite / 页边距 / 匿名）
 - **断点续跑**：中断后从失败步骤继续
 
 ## 安装
@@ -36,7 +37,9 @@ cumcm-agent/
 ├── agents/openai.yaml            # UI 元数据
 ├── scripts/
 │   ├── process_inputs.py         # 赛题 PDF 文本提取 + xlsx 数据探查
-│   └── evidence_check.py         # 论文数字证据预检（防幻觉结果）
+│   ├── evidence_check.py         # 论文数字证据预检（防幻觉结果）
+│   ├── compliance_check.py       # 论文版式/引用/匿名自动合规检查
+│   └── collect_materials.py      # 支撑材料收集器（附录A/B 清单）
 ├── references/                   # 9 份执行指南（01 赛题分析 ~ 09 数据处理）
 └── templates/                    # 赛题分析/建模报告/结果/论文tex/验收契约模板
 ```
