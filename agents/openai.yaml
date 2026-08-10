@@ -1,0 +1,7 @@
+interface:
+  display_name: "国赛建模助手"
+  short_description: "国赛 A 题全流程：赛题分析→建模→编程→图表→论文→PDF"
+  default_prompt: "使用 $cumcm-agent 从赛题分析开始跑完国赛 A 题全流程，直到产出最终 PDF 论文"
+  brand_color: "#1E6FD9"
+policy:
+  allow_implicit_invocation: true

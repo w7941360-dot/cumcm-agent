@@ -1,0 +1,76 @@
+% !TEX program = xelatex
+\documentclass[11pt]{ctexart}
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+
+\title{\textbf{<赛题名称>}}
+\author{}
+\date{}
+
+\begin{document}
+
+% ===== 摘要（单独一页，<=1 页）=====
+\maketitle
+\begin{abstract}
+本文针对<问题>，建立了<模型>。求解得到<关键数值结果>。灵敏度分析表明<结论>。\par
+\textbf{关键词}：关键词1；关键词2；关键词3
+\end{abstract}
+\newpage
+
+\section{问题重述}
+\subsection{问题背景}
+\subsection{待解决问题}
+
+\section{问题分析}
+
+\section{模型假设}
+
+\section{符号说明}
+\begin{table}[H]
+\centering
+\begin{tabular}{lll}
+\toprule
+符号 & 含义 & 单位 \\
+\midrule
+ &  &  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{模型的建立与求解}
+\subsection{子问题 1：<名称>}
+\subsubsection{模型的建立}
+\begin{equation}
+\label{eq:model1}
+...
+\end{equation}
+\subsubsection{模型的求解}
+\subsubsection{结果分析}
+
+\subsection{子问题 2：<名称>}
+% 重复上述结构
+
+\section{模型的检验}
+\subsection{灵敏度分析}
+\subsection{稳定性与误差分析}
+
+\section{模型的评价与推广}
+\subsection{模型的优点}
+\subsection{模型的缺点}
+\subsection{模型的推广}
+
+\begin{thebibliography}{9}
+\bibitem{1} 作者. 标题. 期刊, 年份.
+\end{thebibliography}
+
+\appendix
+\section{程序代码}
+% 附录：核心程序与长表格
+
+\end{document}
