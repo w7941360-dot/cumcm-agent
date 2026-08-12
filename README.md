@@ -8,12 +8,32 @@
 - **A 题（连续/物理类）专项**：物理机制识别、机理建模、数值方法（差分/Crank-Nicolson/有限元）、灵敏度与稳定性分析必做
 - **A 题模式库**：内置 2020-2025 A 题统计与三类高频方法包（工程过程控制/几何光学曲面/轨迹覆盖避碰），默认按「解析基线 + 数值仿真 + 约束优化」三层结构推进
 - **图表插入时机**：每问默认 2 图（模型流程图+结果图）、按论文章节插入、图前引导图后解释、图注五要素、图/表选择规则
+- **双引擎求解与出图**：Python / MATLAB（R2025b）均为一等引擎，可按偏好选用或混合；图表支持专业彩色配色（色盲友好、灰度可区分）
 - **门禁分级**：机器可查（Type-A）自动判定，质量判断（Type-B）由用户判定——"可 DRIVE，不可 ACQUIT"
 - **证据预检**：防编造数字（`scripts/evidence_check.py`，确定性检查论文数字是否真实存在于结果文件）
 - **输入处理**：赛题 PDF 自动提取文本 + 原始数据 xlsx 自动探查（`scripts/process_inputs.py`）
 - **双格式交付 + 3 样出口**：Word 论文 + PDF 论文 + 支撑材料文件夹（`materials/`，collect_materials.py 自动收集）
 - **自动合规检查**：`compliance_check.py`（摘要≤1页 / 页码页脚中部 / 图表居中 / 每条文献被\\cite / 页边距 / 匿名）
 - **断点续跑**：中断后从失败步骤继续
+
+## 安装## 预置功能（替代 Modex-MH-Agent，本 skill 自洽可独立使用）
+
+> Modex-MH-Agent（数模助手 GUI）已删除。本 skill 自带等价的预置能力，其他用户无需安装任何 GUI 即可跑完国赛全流程；如需更多竞赛模板或辅助预置，可参考下列开源项目。
+
+| Modex 预置功能 | 本 skill 的替代/实现 |
+|---|---|
+| 工作流管理（新建科研/竞赛流水线） | 8 步流水线 + 断点续跑（工作区即状态）+ 每步检查点 |
+| 选题与数据辅助建模 | 赛题 PDF 自动提取 + xlsx 数据探查（`scripts/process_inputs.py`）+ 多题六维选题评估（`references/01`） |
+| 内置 LaTeX 一键编译 | 本地 xelatex（MiKTeX）+ pandoc 导出 Word + `compliance_check.py` 自动合规 |
+| 各类竞赛 LaTeX 模板 | CUMCM 模板（`templates/paper/main.tex`）；更多赛事模板见 zhanwen/MathModel、MathModelAgent 模板族 |
+| 建模求解引擎 | Python 与 MATLAB（R2025b）双一等引擎，求解与出图一致，可按偏好选用/混合 |
+
+可借鉴的开源预置（按需集成）：
+- [mathodology](https://github.com/sweetcornna/mathodology)：9 个分工 subagents（建模/编码/论文/评审/盲评判审）+ 多竞赛 workflow 模板 + 免费文献检索 MCP
+- [Meta-model-agent](https://github.com/WuXinbo-bo/Math-model-skills)：7 阶段可审计工作流（明确借鉴了 Modex-MH-Agent 的组织方式）
+- [EZ_math_model](https://github.com/woodfishhhh/EZ_math_model)：formal/demo/blocked 交付状态 + chart manifest 质量门
+- [mathmodel-skill](https://github.com/handsomeZR-netizen/mathmodel-skill)：10 阶段 + 共享决策日志 + doctor.py 环境诊断，支持 CUMCM/MCM/电工杯
+- [zhanwen/MathModel](https://github.com/zhanwen/MathModel)：各赛事 Word/LaTeX 模板、Matlab 教程、算法思维导图
 
 ## 安装
 

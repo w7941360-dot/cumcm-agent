@@ -35,15 +35,21 @@ Optimization、Global Optimization（particleswarm/ga/patternsearch）、Statist
 | 数据插值/网格 | `griddata` / `scatteredInterpolant` / `interp1` |
 | 统计 | `mean/std/quantile/corrcoef/fitlm` |
 
-## 图导出（对齐 04-图表规范）
+## 图导出（对齐 04-图表规范，支持专业彩色）
 ```matlab
 fig = figure('Visible','off');          % 无头模式必须隐藏窗口
-plot(x, y, 'k-', 'LineWidth', 1.2);     % 黑白：线型区分
-xlabel('x (m)'); ylabel('T (°C)'); grid on;
+% 统一配色（Okabe-Ito 六色，色盲友好）
+colors = [0.00 0.45 0.74; 0.85 0.33 0.10; 0.00 0.62 0.45; 0.80 0.47 0.65; 0.94 0.89 0.26; 0.34 0.71 0.91];
+plot(x, y1, '-', 'Color', colors(1,:), 'LineWidth', 1.2); hold on;
+plot(x, y2, '--', 'Color', colors(2,:), 'LineWidth', 1.2);
+xlabel('x (m)'); ylabel('T (°C)'); grid on; set(gca,'FontSize',11);
+legend('方案1','方案2','Location','best');
 exportgraphics(fig, 'fig_xxx.pdf', 'ContentType','vector');  % LaTeX 用矢量 PDF
 exportgraphics(fig, 'fig_xxx.png', 'Resolution', 300);       % Word 用 PNG
 ```
-- 黑白可印刷：多用 `k/r`→灰阶、线型（实/虚/点）、标记区分；必要时 `colormap(gray)`
+- **彩色/灰度均可**：默认专业彩色（Okabe-Ito / parula 色板）；若需黑白打印，用线型（实/虚/点）+ 标记区分，并 `colormap(gray)` 预览确认可读
+- 热图/曲面：`colormap('parula')` 或 `turbo`；**禁止 jet/rainbow 彩虹色**
+- 多组对比用「颜色 + LineStyle + Marker」双编码
 - 图内建议英文标签 + 中文图注（避免 MATLAB 中文字体在无头环境缺字体的问题）
 - 图统一存 `figures/`，命名 `fig_<内容>.pdf/.png` 成对
 
