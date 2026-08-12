@@ -1,6 +1,11 @@
 % !TEX program = xelatex
-% CUMCM 论文骨架（按 2025 国赛 A 题实战反馈重构）
+% CUMCM 论文骨架（按 2025 国赛 A 题实战反馈重构；2026-08 增补图表插入时机 / 双引擎 / 专业彩色配色）
 % 版式：A4 白纸、四边页边距 >= 2.5cm、页码页脚中部、摘要起从 1 连续编号、图表居中、图注中文
+% 图表规范（详见 references/04-图表规范.md）：
+%   - 每个已求解子问题默认 >= 2 张图：模型流程图 + 核心结果图；验证/灵敏度另加
+%   - 图前有引导文字、图后有解释文字；连续 2-3 张图表间必须有文字
+%   - 配色：专业彩色（色盲友好色板）或灰度均可，灰度可区分；禁止彩虹渐变
+%   - 引擎：求解与出图可用 Python matplotlib 或 MATLAB（exportgraphics），规范见 references/04、10
 \documentclass[11pt]{ctexart}
 \usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm]{geometry}
 \usepackage{amsmath,amssymb}
@@ -49,6 +54,32 @@
 \setcounter{page}{1}
 \newpage
 
+% ============================================================
+% 图表插入模板（复制到目标位置后取消注释并替换占位内容）
+%
+% 图：图前引导文字 -> \begin{figure} -> 图后解释文字
+% 图注五要素：①展示什么 ②支撑哪问 ③关键趋势/结果 ④数据来源(脚本/表格) ⑤验证含义(若是验证图)
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.85\textwidth]{../figures/fig_q1_result.pdf}  % LaTeX 用矢量 PDF；Word 用同目录 PNG
+%   \caption{图 X：<展示什么>。该图支撑<问题 N>，结果表明<关键趋势/结果>，数据来源<脚本/表>。}
+%   \label{fig:q1_result}
+% \end{figure}
+%
+% 三线表（结果表/可行性表/灵敏度表/评价表）：
+% \begin{table}[H]
+%   \centering
+%   \caption{表 X：<表注>}
+%   \label{tab:q1}
+%   \begin{tabular}{ccc}
+%     \toprule 列1 & 列2 & 列3 \\
+%     \midrule
+%     <值> & <值> & <值> \\
+%     \bottomrule
+%   \end{tabular}
+% \end{table}
+% ============================================================
+
 % ========== 一、问题重述 ==========
 \section{问题重述}
 \subsection{问题背景}
@@ -69,6 +100,7 @@
 % ========== 二、问题分析 ==========
 \section{问题分析}
 % 每问独立分节，每节四步法：①与前问关系 ②分步求解路线 ③本问特有难点 ④落点（建什么模型）
+% 🔎 插入时机：本节放 1 张「技术路线/解题路径流程图」（fig_route_overview），展示逐问解题路径并标注难点与突破点
 \subsection{问题一分析}
 <① 与前问关系；② 求解路线；③ 难点；④ 落点。>
 
@@ -116,6 +148,8 @@ $\theta$ & <含义> & <单位> \\
 
 \subsection{态势可视化与观察分析}
 <画态势图（俯视图/侧视图），从图中观察几何关系，得出建模动机。>
+% 🔎 插入时机：此处放「态势/坐标系示意图」（fig_problem_overview）——先画图再建模
+% 图前引导：<说明为什么要先看图、图中观察到什么几何关系>
 
 \subsection{运动轨迹方程}
 <推导基础运动方程：如抛体运动、匀速直线运动、云团下沉等。>
@@ -137,34 +171,59 @@ $\theta$ & <含义> & <单位> \\
 \subsubsection{模型的求解}
 <三段式：①算法（点名+亮点） ②数值求解 ③结果与分析。>
 <结果数值保留 6~8 位小数。>
+% 🔎 插入时机：每问默认 2 张图——模型流程图（fig_q1_model_flow）+ 核心结果图（fig_q1_result）；
+%              有验证/误差/约束/灵敏度时再加 1 张检查图（fig_q1_validation）
+% 图前引导：<为什么需要这张图、它检验或回答什么问题>；图后解释：<关键数值/趋势/对比，回到题目要求>
 
 \subsection{问题二：<名称>}
 \subsubsection{模型的建立}
 <同上四段式。>
 \subsubsection{模型的求解}
 <同上三段式。>
+% 🔎 插入 fig_q2_model_flow + fig_q2_result（+ 验证/灵敏度图）
 
 \subsection{问题三：<名称>}
 \subsubsection{模型的建立}
 \subsubsection{模型的求解}
+% 🔎 插入 fig_q3_model_flow + fig_q3_result（+ 验证/灵敏度图）
 
 \subsection{问题四：<名称>}
 \subsubsection{模型的建立}
 \subsubsection{模型的求解}
+% 🔎 插入 fig_q4_model_flow + fig_q4_result（+ 验证/灵敏度图）
 
 \subsection{问题五：<名称>}
 \subsubsection{模型的建立}
 \subsubsection{模型的求解}
+% 🔎 插入 fig_q5_model_flow + fig_q5_result（+ 验证/灵敏度图）
 
 % ========== 七、模型的检验 ==========
 \section{模型的检验}
 \subsection{灵敏度分析}
 <关键参数 ±10%~±50% 扰动，结果变化范围与结论。>
+% 🔎 插入时机：独立章节放「参数扫描曲线/热图/Tornado 图」（fig_sensitivity），不塞进结果段
+% 图后解释：<哪个参数最敏感、变化方向、对结论的影响>
+
 \subsection{稳定性与误差分析}
 <网格/步长收敛性、与解析解或实测对比、相对误差。>
+% 🔎 可插入收敛性图（fig_convergence）或 解析 vs 数值 同轴对比图（fig_compare）
 
 % ========== 八、模型的评价与推广 ==========
 \section{模型的评价与推广}
+% 🔎 插入时机：本节可用三线表呈现优缺点/方案对比（如 SWOT 表）
+\begin{table}[H]
+\centering
+\caption{表 X：<优缺点/方案对比>}
+\label{tab:eval}
+\begin{tabular}{lll}
+\toprule
+<维度> & <优点> & <缺点> \\
+\midrule
+<可解释性> & <……> & <以……计算代价换取……> \\
+<适用性> & <……> & <在……假设下适用> \\
+\bottomrule
+\end{tabular}
+\end{table}
 \subsection{模型的优点}
 % 规则：优点条数 > 缺点条数
 \begin{enumerate}[leftmargin=2em,itemsep=1pt]
@@ -203,8 +262,8 @@ $\theta$ & <含义> & <单位> \\
 \section*{附录 A　支撑材料目录}
 <按 collect_materials.py 生成的支撑材料清单粘贴：源程序、中间图表、结果数据。>
 
-\section*{附录 B　代码（Python）}
-% 代码用表格 + 行号呈现，避免直接粘贴大段代码
+\section*{附录 B　代码（Python / MATLAB）}
+% 代码用表格 + 行号呈现，避免直接粘贴大段代码；注明引擎与复现命令
 \begin{table}[H]
 \centering
 \begin{tabular}{ll}
