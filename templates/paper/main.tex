@@ -1,8 +1,10 @@
 % !TEX program = xelatex
 % CUMCM 论文骨架（按 2025 国赛 A 题实战反馈重构；2026-08 增补图表插入时机 / 双引擎 / 专业彩色配色）
 % 版式：A4 白纸、四边页边距 >= 2.5cm、页码页脚中部、摘要起从 1 连续编号、图表居中、图注中文
+% 摘要页与正文统一排版体系：标题（三号黑体居中）→「摘要」（四号黑体居中，与正文一级标题同字号）
+%   → 正文一级标题「一、问题重述」黑体四号 + 中文数字，二级/三级保留阿拉伯编号（1.1 / 1.1.1）
 % 图表规范（详见 references/04-图表规范.md）：
-%   - 每个已求解子问题默认 >= 2 张图：模型流程图 + 核心结果图；验证/灵敏度另加
+%   - 每个已求解子问题默认 >= 3 张图：工作机理示意图 + 算法流程图 + 核心结果图；验证/灵敏度另加
 %   - 图前有引导文字、图后有解释文字；连续 2-3 张图表间必须有文字
 %   - 配色：专业彩色（色盲友好色板）或灰度均可，灰度可区分；禁止彩虹渐变
 %   - 引擎：求解与出图可用 Python matplotlib 或 MATLAB（exportgraphics），规范见 references/04、10
@@ -13,10 +15,11 @@
 \usepackage{booktabs}
 \usepackage{caption}
 \usepackage{float}
+\usepackage{listings}% 附录 B 代码展示（每问求解/模型代码 + 逐行行号，不含生图代码）
 \usepackage{fancyhdr}
 \usepackage[hidelinks]{hyperref}
 \usepackage{enumitem}
-\captionsetup{font=small,labelfont=bf}
+\captionsetup{font=small,labelfont=bf,justification=centering}
 
 % ---- 页码：页脚中部，阿拉伯数字从摘要页 1 连续编号 ----
 \pagestyle{fancy}
@@ -24,9 +27,23 @@
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0pt}
 
-\title{\textbf{<赛题名称>}}
-\author{}
-\date{}
+% ---- 章节样式统一（与摘要页同一排版体系）----
+% 一级标题：黑体四号 + 中文数字「一、问题重述」（aftername 置空去掉编号后多余间距）
+% 二级/三级：黑体小四，保留阿拉伯编号（1.1 / 1.1.1）
+\ctexset{
+  section = {
+    format = \heiti\zihao{4},
+    name   = {,、},
+    aftername = {},
+    beforeskip = 1.2ex,
+    afterskip  = 1.0ex
+  },
+  subsection   = {format = \heiti\zihao{-4}},
+  subsubsection= {format = \heiti\zihao{-4}}
+}
+\renewcommand\thesection{\chinese{section}}
+\renewcommand\thesubsection{\arabic{section}.\arabic{subsection}}
+\renewcommand\thesubsubsection{\arabic{section}.\arabic{subsection}.\arabic{subsubsection}}
 
 \begin{document}
 
@@ -34,8 +51,18 @@
 % 结构：背景段 + 每个问题各一段 + 关键词行（无英文翻译）
 % 每问段落七要素：①情形及与前问关系 ②建模（决策变量+目标函数）③算法点名+亮点
 %                ④最优策略数值（6~8 位小数）⑤结果 ⑥交叉验证/相对误差 ⑦附件说明
-\maketitle
-\begin{abstract}
+% 标题块：与「摘要」标题统一用「居中 + 黑体」体系（标题三号、摘要四号），
+% 不再用 \maketitle（article 样式 + 空 author/date 留白，与正文 \section 割裂）
+\begin{center}
+{\zihao{3}\heiti\bfseries <赛题名称>}
+\end{center}
+
+\vspace{1.0em}
+\begin{center}
+{\zihao{4}\heiti 摘要}
+\end{center}
+
+\vspace{0.6em}
 <背景段：本文针对……赛题，建立了……模型。问题难点在于……>
 
 <问题一：针对问题一，建立……模型，以……为决策变量、……为目标函数，采用……算法求解，得到……（6~8 位小数）。为验证可靠性，用……交叉验证，相对误差为……。其余数据见附件 result1.xlsx。>
@@ -48,9 +75,8 @@
 
 <问题五：……>
 
-\par
-\textbf{关键词}：关键词1；关键词2；关键词3；关键词4
-\end{abstract}
+\vspace{0.6em}
+\noindent\textbf{关键词：}关键词1；关键词2；关键词3；关键词4
 \setcounter{page}{1}
 \newpage
 
@@ -59,17 +85,19 @@
 %
 % 图：图前引导文字 -> \begin{figure} -> 图后解释文字
 % 图注五要素：①展示什么 ②支撑哪问 ③关键趋势/结果 ④数据来源(脚本/表格) ⑤验证含义(若是验证图)
+% 题注排版：单独一行并居中；caption 内【不写】「图 N：」/「表 N：」前缀——编号由 \caption 自动生成，
+%            手写前缀会造成「图 10: 图 10：…」图号重复
 % \begin{figure}[H]
 %   \centering
 %   \includegraphics[width=0.85\textwidth]{../figures/fig_q1_result.pdf}  % LaTeX 用矢量 PDF；Word 用同目录 PNG
-%   \caption{图 X：<展示什么>。该图支撑<问题 N>，结果表明<关键趋势/结果>，数据来源<脚本/表>。}
+%   \caption{<展示什么>。该图支撑<问题 N>，结果表明<关键趋势/结果>，数据来源<脚本/表>。}
 %   \label{fig:q1_result}
 % \end{figure}
 %
 % 三线表（结果表/可行性表/灵敏度表/评价表）：
 % \begin{table}[H]
 %   \centering
-%   \caption{表 X：<表注>}
+%   \caption{<表注>}
 %   \label{tab:q1}
 %   \begin{tabular}{ccc}
 %     \toprule 列1 & 列2 & 列3 \\
@@ -100,7 +128,7 @@
 % ========== 二、问题分析 ==========
 \section{问题分析}
 % 每问独立分节，每节四步法：①与前问关系 ②分步求解路线 ③本问特有难点 ④落点（建什么模型）
-% 🔎 插入时机：本节放 1 张「技术路线/解题路径流程图」（fig_route_overview），展示逐问解题路径并标注难点与突破点
+% 🔎 插入时机：节首放 1 张全题技术路线图（fig_route_overview，逐问解题路径总览）；每问分析分节后再放 1 张该问解题路径流程图
 \subsection{问题一分析}
 <① 与前问关系；② 求解路线；③ 难点；④ 落点。>
 
@@ -148,7 +176,7 @@ $\theta$ & <含义> & <单位> \\
 
 \subsection{态势可视化与观察分析}
 <画态势图（俯视图/侧视图），从图中观察几何关系，得出建模动机。>
-% 🔎 插入时机：此处放「态势/坐标系示意图」（fig_problem_overview）——先画图再建模
+% 🔎 插入时机：此处放「态势/坐标系示意图」（fig_problem_overview）+ 全题工作机理示意图（fig_mechanism_overview，可并入态势图）——先画图再建模
 % 图前引导：<说明为什么要先看图、图中观察到什么几何关系>
 
 \subsection{运动轨迹方程}
@@ -171,7 +199,7 @@ $\theta$ & <含义> & <单位> \\
 \subsubsection{模型的求解}
 <三段式：①算法（点名+亮点） ②数值求解 ③结果与分析。>
 <结果数值保留 6~8 位小数。>
-% 🔎 插入时机：每问默认 2 张图——模型流程图（fig_q1_model_flow）+ 核心结果图（fig_q1_result）；
+% 🔎 插入时机：每问默认 3 张图——工作机理示意图（fig_q1_mechanism）+ 算法流程图（fig_q1_flow）+ 核心结果图（fig_q1_result）；
 %              有验证/误差/约束/灵敏度时再加 1 张检查图（fig_q1_validation）
 % 图前引导：<为什么需要这张图、它检验或回答什么问题>；图后解释：<关键数值/趋势/对比，回到题目要求>
 
@@ -180,22 +208,22 @@ $\theta$ & <含义> & <单位> \\
 <同上四段式。>
 \subsubsection{模型的求解}
 <同上三段式。>
-% 🔎 插入 fig_q2_model_flow + fig_q2_result（+ 验证/灵敏度图）
+% 🔎 插入 fig_q2_mechanism（工作机理示意图）+ fig_q2_flow（算法流程图）+ fig_q2_result（结果图）（+ 验证/灵敏度图）
 
 \subsection{问题三：<名称>}
 \subsubsection{模型的建立}
 \subsubsection{模型的求解}
-% 🔎 插入 fig_q3_model_flow + fig_q3_result（+ 验证/灵敏度图）
+% 🔎 插入 fig_q3_mechanism（工作机理示意图）+ fig_q3_flow（算法流程图）+ fig_q3_result（结果图）（+ 验证/灵敏度图）
 
 \subsection{问题四：<名称>}
 \subsubsection{模型的建立}
 \subsubsection{模型的求解}
-% 🔎 插入 fig_q4_model_flow + fig_q4_result（+ 验证/灵敏度图）
+% 🔎 插入 fig_q4_mechanism（工作机理示意图）+ fig_q4_flow（算法流程图）+ fig_q4_result（结果图）（+ 验证/灵敏度图）
 
 \subsection{问题五：<名称>}
 \subsubsection{模型的建立}
 \subsubsection{模型的求解}
-% 🔎 插入 fig_q5_model_flow + fig_q5_result（+ 验证/灵敏度图）
+% 🔎 插入 fig_q5_mechanism（工作机理示意图）+ fig_q5_flow（算法流程图）+ fig_q5_result（结果图）（+ 验证/灵敏度图）
 
 % ========== 七、模型的检验 ==========
 \section{模型的检验}
@@ -210,20 +238,8 @@ $\theta$ & <含义> & <单位> \\
 
 % ========== 八、模型的评价与推广 ==========
 \section{模型的评价与推广}
-% 🔎 插入时机：本节可用三线表呈现优缺点/方案对比（如 SWOT 表）
-\begin{table}[H]
-\centering
-\caption{表 X：<优缺点/方案对比>}
-\label{tab:eval}
-\begin{tabular}{lll}
-\toprule
-<维度> & <优点> & <缺点> \\
-\midrule
-<可解释性> & <……> & <以……计算代价换取……> \\
-<适用性> & <……> & <在……假设下适用> \\
-\bottomrule
-\end{tabular}
-\end{table}
+% 说明：本节用文字分节陈述（优点/缺点/推广），模板不默认插入表格；
+%       仅当确有「多方案/多维对比」价值时才可另加三线表（表注居中，编号由 LaTeX 自动生成）
 \subsection{模型的优点}
 % 规则：优点条数 > 缺点条数
 \begin{enumerate}[leftmargin=2em,itemsep=1pt]
@@ -260,20 +276,33 @@ $\theta$ & <含义> & <单位> \\
 \end{center}
 
 \section*{附录 A　支撑材料目录}
-<按 collect_materials.py 生成的支撑材料清单粘贴：源程序、中间图表、结果数据。>
+<按 collect\_materials.py 生成的支撑材料清单粘贴：源程序、中间图表、结果数据。>
 
 \section*{附录 B　代码（Python / MATLAB）}
-% 代码用表格 + 行号呈现，避免直接粘贴大段代码；注明引擎与复现命令
-\begin{table}[H]
-\centering
-\begin{tabular}{ll}
-\toprule
-行号 & 代码 \\
-\midrule
-1--10 & <核心函数：……> \\
-11--30 & <主流程：……> \\
-\bottomrule
-\end{tabular}
-\end{table}
+% 要求：展示支撑材料（materials/源程序/）中的【每问求解代码 + 模型代码】，不含生图代码；
+%       画图脚本统一放 code/plots/ 或命名 plot_*.py / fig_*.py / draw_*.m（collect_materials.py 自动排除）；
+%       每个代码文件一个小节：先写「代码名」，再用 \lstinputlisting 逐行标明行号列出完整代码。
+% 用法：1) 导言区已加载 listings 包（\lstset 配置见下）；
+%       2) 求解/模型代码有多少个文件就列多少个小节，全部展示，不许只列文件名；
+%       3) 删除下面示例前的 % 并按实际文件路径替换。
+\lstset{
+  basicstyle=\ttfamily\small,
+  numbers=left,
+  numberstyle=\tiny,
+  stepnumber=1,
+  breaklines=true,
+  showstringspaces=false,
+  frame=single,
+  language=Python
+}
+
+% 示例：每个源码文件一个小节（代码名 + 逐行行号）。取消注释并替换路径后启用：
+% \subsection*{B.1　code/main.py}
+% \lstinputlisting{../code/main.py}
+%
+% \subsection*{B.2　code/utils.py}
+% \lstinputlisting{../code/utils.py}
+%
+% MATLAB 同理：\subsection*{B.3　code/opt.m} \lstinputlisting{../code/opt.m}
 
 \end{document}

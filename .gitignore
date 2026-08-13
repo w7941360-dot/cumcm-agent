@@ -1,3 +1,15 @@
 __pycache__/
 *.pyc
 .DS_Store
+
+# LaTeX 编译产物（templates/paper 与工作区 paper/ 均不纳入版本控制）
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+main.pdf

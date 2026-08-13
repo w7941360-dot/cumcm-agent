@@ -5,11 +5,11 @@
   python collect_materials.py <工作区根目录>
 
 把以下内容收集到 <工作区>/materials/ 支撑材料文件夹：
-  - 源程序/    code/ 下的 .py（可运行）
+  - 源程序/    code/ 下的求解/模型代码 .py/.m（自动排除生图脚本：code/plots/ 目录或 plot_*/fig_*/draw_* 命名）
   - 中间图表/  figures/ 下的图件
   - 结果数据/  result*.xlsx / RESULTS.md / data/processed
   - 附录A_支撑材料目录.md（清单）
-  - 附录B_代码表格.md（代码表格 + 行号，供论文附录 B 直接引用）
+  - 附录B_代码表格.md（每问求解/模型代码明细：文件名 + 逐行行号，不含生图代码）
 
 交付口径：只交 3 样——Word 论文、PDF 论文、支撑材料文件夹。
 """
@@ -35,19 +35,45 @@ def main() -> int:
         d.mkdir(parents=True, exist_ok=True)
 
     manifest = ["# 附录 A　支撑材料目录", ""]
-    code_table = ["# 附录 B　代码（Python）", "", "| 行号 | 代码 |", "|---|---|"]
+    code_table = ["# 附录 B　代码明细（每问求解代码 + 模型代码，不含生图代码）", ""]
 
-    # 1) 源程序
+    def is_plot_script(code_dir: Path, path: Path) -> bool:
+        # 生图脚本约定：code/plots/ 或 code/figures/ 目录；或文件名以 plot_/fig_/draw_ 开头、以 _plot/_fig/_draw 结尾
+        try:
+            rel = path.relative_to(code_dir)
+        except ValueError:
+            return False
+        if any(seg.lower() in ("plots", "figures") for seg in rel.parts[:-1]):
+            return True
+        name = path.name.lower()
+        return any(
+            name.startswith(h + "_") or name.endswith("_" + h + path.suffix.lower())
+            for h in ("plot", "fig", "draw")
+        )
+
+    # 1) 源程序（.py / .m：每问求解/模型代码，文件名 + 逐行行号；生图脚本不展示）
     code_dir = ws / "code"
+    code_exts = (".py", ".m")
     n_code = 0
+    n_plot = 0
     if code_dir.is_dir():
-        for f in sorted(code_dir.rglob("*.py")):
+        for f in sorted(p for p in code_dir.rglob("*") if p.is_file() and p.suffix.lower() in code_exts):
+            if is_plot_script(code_dir, f):
+                n_plot += 1
+                continue
             shutil.copy2(f, code_out / f.name)
             n_code += 1
+            rel = f.relative_to(ws).as_posix()
             lines = f.read_text(encoding="utf-8", errors="replace").splitlines()
-            span = f"1--{len(lines)}" if lines else "1"
-            code_table.append(f"| {span} | {f.name}（{len(lines)} 行） |")
-    manifest.append(f"## 源程序（{n_code} 个 .py）")
+            code_table.append(f"## {rel}")
+            code_table.append("")
+            code_table.append("| 行号 | 代码 |")
+            code_table.append("|---:|---|")
+            for i, ln in enumerate(lines, 1):
+                cell = ln.replace("|", "\\|")
+                code_table.append(f"| {i} | {cell} |")
+            code_table.append("")
+    manifest.append(f"## 源程序（{n_code} 个 .py/.m，不含生图脚本）")
 
     # 2) 中间图表
     fig_dir = ws / "figures"
@@ -75,7 +101,7 @@ def main() -> int:
 
     # 4) 附录 B 汇总
     code_table.append("")
-    code_table.append(f"> 共 {n_code} 个源程序；完整代码见 源程序/ 文件夹。")
+    code_table.append(f"> 共 {n_code} 个源程序（求解/模型代码），已按文件展开（文件名 + 逐行行号）；生图脚本 {n_plot} 个不展示。")
 
     (out / "附录A_支撑材料目录.md").write_text("\n".join(manifest), encoding="utf-8")
     (out / "附录B_代码表格.md").write_text("\n".join(code_table), encoding="utf-8")
