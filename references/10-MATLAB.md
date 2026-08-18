@@ -1,7 +1,7 @@
 # 10 MATLAB（R2025b）计算引擎
 
 > 本机已装 MATLAB R2025b（`D:\matlab`），步骤3 编程实现可用 MATLAB 代替 Python（或互补）。
-> 已实测：`matlab -batch` 无头运行 粒子群优化 + pdepe 热传导 + 矢量 PDF 导出 全部成功。
+> 已实测：`matlab -batch` 无头运行 粒子群优化 + pdepe 热传导 + PNG 导出 全部成功。
 
 ## 检测与调用
 
@@ -44,14 +44,13 @@ plot(x, y1, '-', 'Color', colors(1,:), 'LineWidth', 1.2); hold on;
 plot(x, y2, '--', 'Color', colors(2,:), 'LineWidth', 1.2);
 xlabel('x (m)'); ylabel('T (°C)'); grid on; set(gca,'FontSize',11);
 legend('方案1','方案2','Location','best');
-exportgraphics(fig, 'fig_xxx.pdf', 'ContentType','vector');  % LaTeX 用矢量 PDF
-exportgraphics(fig, 'fig_xxx.png', 'Resolution', 300);       % Word 用 PNG
+exportgraphics(fig, 'fig_xxx.png', 'Resolution', 300);       % LaTeX 与 Word 均用 PNG
 ```
 - **彩色/灰度均可**：默认专业彩色（Okabe-Ito / parula 色板）；若需黑白打印，用线型（实/虚/点）+ 标记区分，并 `colormap(gray)` 预览确认可读
 - 热图/曲面：`colormap('parula')` 或 `turbo`；**禁止 jet/rainbow 彩虹色**
 - 多组对比用「颜色 + LineStyle + Marker」双编码
 - 图内建议英文标签 + 中文图注（避免 MATLAB 中文字体在无头环境缺字体的问题）
-- 图统一存 `figures/`，命名 `fig_<内容>.pdf/.png` 成对
+- 图统一存 `figures/`，命名 `fig_<内容>.png`（只需 PNG，≥300 dpi）
 
 ## 结果输出规范（与 evidence_check 衔接）
 - 关键数值写 CSV：`writematrix(result, 'result1.csv')` 或 `writetable`
