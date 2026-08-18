@@ -32,7 +32,7 @@
 % 二级/三级：黑体小四，保留阿拉伯编号（1.1 / 1.1.1）
 \ctexset{
   section = {
-    format = \heiti\zihao{4},
+    format = \centering\heiti\zihao{4},
     name   = {,、},
     aftername = {},
     beforeskip = 1.2ex,
@@ -84,13 +84,13 @@
 % 图表插入模板（复制到目标位置后取消注释并替换占位内容）
 %
 % 图：图前引导文字 -> \begin{figure} -> 图后解释文字
-% 图注五要素：①展示什么 ②支撑哪问 ③关键趋势/结果 ④数据来源(脚本/表格) ⑤验证含义(若是验证图)
+% 图注要点：①展示什么 ②关键趋势/结果 ③验证含义(若是验证图)；禁止「支撑哪问/数据来源」流程解释
 % 题注排版：单独一行并居中；caption 内【不写】「图 N：」/「表 N：」前缀——编号由 \caption 自动生成，
 %            手写前缀会造成「图 10: 图 10：…」图号重复
 % \begin{figure}[H]
 %   \centering
 %   \includegraphics[width=0.85\textwidth]{../figures/fig_q1_result.pdf}  % LaTeX 用矢量 PDF；Word 用同目录 PNG
-%   \caption{<展示什么>。该图支撑<问题 N>，结果表明<关键趋势/结果>，数据来源<脚本/表>。}
+%   \caption{<展示什么>，结果表明<关键趋势/结果>。}
 %   \label{fig:q1_result}
 % \end{figure}
 %
@@ -117,13 +117,14 @@
 <先总述已知条件，再按本质归类子问题（如：问题一、二为单机单弹求值→优化；问题三为多弹时序规划；问题四为多机空间协同；问题五为任务分配+资源调度）。>
 % ⚠️ 禁止写「结果填入 resultX.xlsx」这类话术，全部用建模化措辞。
 
-\begin{enumerate}[leftmargin=2em,itemsep=1pt]
-\item \textbf{问题 1}：<……>
-\item \textbf{问题 2}：<……>
-\item \textbf{问题 3}：<……>
-\item \textbf{问题 4}：<……>
-\item \textbf{问题 5}：<……>
-\end{enumerate}
+% 问题列表：直接写「问题一：」…文本编号，不用 enumerate 自动编号（避免「1. 问题 1」重复编号）
+\begin{itemize}[leftmargin=2em,itemsep=1pt,label={}]
+\item \textbf{问题一}：<……>
+\item \textbf{问题二}：<……>
+\item \textbf{问题三}：<……>
+\item \textbf{问题四}：<……>
+\item \textbf{问题五}：<……>
+\end{itemize}
 
 % ========== 二、问题分析 ==========
 \section{问题分析}
@@ -191,6 +192,17 @@ $\theta$ & <含义> & <单位> \\
 \subsection{问题一：<名称>}
 \subsubsection{模型的建立}
 <四段式：①情形及与前问关系 ②决策变量与目标函数 ③约束条件 ④建立公式/方程。>
+% 优化模型展示：目标函数 + s.t. + 大括号约束组（思考/推导过程逐步写在正文，禁止只贴最终模型）
+% \begin{align}
+%   \max_{x}\quad & f(x) \\
+%   \text{s.t.}\quad & \left\{
+%   \begin{array}{ll}
+%     g_i(x)\le 0, & i=1,2,\dots,m,\\[2pt]
+%     h_j(x)=0, & j=1,2,\dots,n,\\[2pt]
+%     x\in \mathcal{X}.
+%   \end{array}
+%   \right.
+% \end{align}
 \begin{equation}
 \label{eq:q1}
 <公式>
@@ -256,8 +268,18 @@ $\theta$ & <含义> & <单位> \\
 \subsection{模型的推广}
 <推广到其他场景/问题。>
 
+% ========== AI 使用声明（参考文献之前）==========
+% 独立成段、与正文字号一致；\cite 所用 AI 模型，参考文献中同步加该模型版本条目（见 references/05）
+% \noindent\textbf{声明：}本参赛队在竞赛过程中使用了 AI 工具（<模型名> 大语言模型\cite{<ai-key>}），主要用于语言润色、代码调试和排版等，详细使用情况见支撑材料「AI使用情况」。
+
 % ========== 参考文献 ==========
 % 规则：只保留 thebibliography；不少于 8 条学术文献；每条至少被正文 \cite 一次；删除官网/组委会条目
+% 参考文献标题：居中（\renewcommand{\refname}{} 抑制自动标题后手动居中输出）
+\renewcommand{\refname}{}
+\begin{center}
+{\zihao{4}\heiti 参考文献}
+\end{center}
+\vspace{1.0ex}
 \begin{thebibliography}{99}
 \bibitem{ref1} <作者. 标题. 期刊, 年份, 卷(期): 页码.>
 \bibitem{ref2} <作者. 标题. 会议/期刊, 年份.>

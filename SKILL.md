@@ -23,6 +23,8 @@ description: 全国大学生数学建模竞赛（CUMCM，国赛）全流程自�
 > ⚠️ 额外坑（实战踩过）：
 > - **全角引号陷阱**：Windows PowerShell 命令串里的全角引号（U+201C/U+201D）会被自动转成 ASCII 双引号，导致命令被截断/内容损坏。命令行传中文时用「」（U+300C/U+300D）代替；生成中文文件推荐 `python -X utf8 -c "..."` 以三层单引号写内容（避开全角引号/ASCII 双引号/美元符/反引号）。
 > - **终端乱码 ≠ 文件损坏**：终端按 GBK 显示 UTF-8 内容会乱码；校验文件用 Python 按 UTF-8 读回，不能只看终端。
+> - **控制台编码**：Windows 控制台默认 GBK，跑含 emoji 的脚本（如 compliance_check.py）会报 UnicodeEncodeError，先 `$env:PYTHONIOENCODING='utf-8'`
+> - **编译退出码**：xelatex 有错也会写出 PDF，必须检查 `$LASTEXITCODE` 与 `main.log` 中的 `LaTeX Error`（实战：缺 `\item` 时报 missing item 仍产出 PDF）
 
 ## 环境预置（开始前）
 
@@ -122,10 +124,11 @@ cumcm-2026/            # 示例目录名，以用户指定为准
 
 ### 步骤 4 — 图表生成 → `figures/`
 - 读 `references/04-图表规范.md`
+- 示意图检查清单见 `references/12-实战复盘与常见坑.md`：黑白或学术彩色均可、严谨细致、箭头方向逐图核对、图内大字号不重叠、文字不出框
 - 生成论文级图表：**专业彩色/灰度配色**（色盲友好色板、灰度可区分）、矢量/高分辨率、坐标轴规范；正确性规则（事实）必守，风格规则可商量
 - A 题典型图：解曲面/热图/等高线、时空演化、参数扫描、收敛性、灵敏度；优化题另加：优化收敛曲线、范式对比图、约束边界图
 - **先做图表规划再出图**：全题配技术路线图 + 工作机理示意图；每个已求解子问题默认 ≥3 张（工作机理示意图 + 算法流程图 + 结果图），验证/灵敏度分析另加 1 张检查图；只有表格明显更清楚时才少画图并说明原因
-- 图注按五要素写（展示什么/支撑哪问/关键结果/数据来源/验证含义）
+- 图注写「展示什么 + 关键结果/验证含义」；**不写**「支撑哪问/数据来源」这类流程解释（见 references/04 图注要点）
 
 ### 步骤 5 — 流程图/架构图 → `figures/`
 - 画：①**全题技术路线图** ②**全题工作机理示意图**（可并入态势图）③每问**算法流程图/模型框架图**（draw.io / mermaid / HTML→PDF 均可，输出矢量文件给 LaTeX 引用）
@@ -135,6 +138,9 @@ cumcm-2026/            # 示例目录名，以用户指定为准
 - 读 `references/05-论文写作.md`，用 `templates/paper/main.tex` 骨架
 - **动笔前先定验收标准**：用 `templates/PAPER_ACCEPTANCE_CONTRACT.md` 写 `PAPER_ACCEPTANCE_CONTRACT.md`（读 `references/08-验收契约.md`），请用户确认（10-20 条可检验断言）
 - 写完整论文：摘要单独一页、正文按当年官方页数上限
+- **标题居中**：汉字编号一级标题与「参考文献」标题都要居中
+- **AI 使用声明**：参考文献前独立成段加声明并 `\cite` 所用 AI 模型；参考文献中加 AI 模型版本条目（详见 references/05）
+- **问题重述**：五个子问题直接写「问题一：」…文本编号，不用 enumerate 自动编号（避免「1. 问题 1」重复编号）
 - **按 `references/04-图表规范.md` 的插入时机放图表**：每章放对应图（问题分析流程图/模型准备态势图/每问流程+结果图/灵敏度图），图前有引导、图后必有解释，连续图表间必须有文字，正文解释文字多于图表
 - ✅ 检查点（approve，Type-B 由用户判定）：用户批准后继续
 
@@ -143,6 +149,7 @@ cumcm-2026/            # 示例目录名，以用户指定为准
 - **Word**：用 pandoc 由 LaTeX 导出 `paper/main.docx`（`pandoc main.tex -o main.docx`）——已实测可用
 - **PDF**：优先本机本地编译（xelatex，见「环境预置」，本机已装 MiKTeX 25.12）；本地不可用时回退 Overleaf / TeX Live.net（上传 main.tex + figures/，编译器选 XeLaTeX，下载 main.pdf）
 - **合规检查**：跑 `python scripts/compliance_check.py paper [paper/main.pdf]`，要求无 FAIL（摘要≤1页/页码页脚中部/图表居中/每条文献被\\cite/页边距/匿名/图表明细）
+- **同步纪律**：每次改 main.tex 后重编 PDF（检查退出码与 log）+ 重导 Word + 重跑合规；Windows 控制台先 `$env:PYTHONIOENCODING='utf-8'`（详见 references/06、12）
 - ✅ 检查点（Type-A）：PDF 与 Word 都成功生成，且合规检查无 FAIL，用户批准进入步骤 8
 
 ### 步骤 8 — 改进循环 → 修订终稿
