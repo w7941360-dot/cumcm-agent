@@ -1,6 +1,6 @@
 % !TEX program = xelatex
 % CUMCM 论文骨架（按 2025 国赛 A 题实战反馈重构；2026-08 增补图表插入时机 / 双引擎 / 专业彩色配色）
-% 版式：A4 白纸、四边页边距 >= 2.5cm、页码页脚中部、摘要起从 1 连续编号、图表居中、图注中文
+% 版式：A4 白纸、四边页边距 >= 2.5cm、页码页脚中部、摘要起从 1 连续编号、图表居中、图注中文、正文（不含参考文献与附录）<= 30 页（25 页最好）
 % 摘要页与正文统一排版体系：标题（三号黑体居中）→「摘要」（四号黑体居中，与正文一级标题同字号）
 %   → 正文一级标题「一、问题重述」黑体四号 + 中文数字，二级/三级保留阿拉伯编号（1.1 / 1.1.1）
 % 图表规范（详见 references/04-图表规范.md）：
@@ -256,6 +256,13 @@ $\theta$ & <含义> & <单位> \\
 \subsection{模型的推广}
 <推广到其他场景/问题。>
 
+% ========== AI工具使用声明（参考文献之前；国赛规定，本 skill 默认使用 AI）==========
+\section*{AI工具使用声明}
+本参赛队在竞赛过程中使用了AI工具，主要用于【语言润色、代码调试、模型/代码框架整理、图表与流程示意图生成等】，详细使用情况见支撑材料。
+
+% 若确未使用 AI，改用下句并删掉上面那句：
+% 本参赛队在竞赛过程中未使用任何AI工具。
+
 % ========== 参考文献 ==========
 % 规则：只保留 thebibliography；不少于 8 条学术文献；每条至少被正文 \cite 一次；删除官网/组委会条目
 \begin{thebibliography}{99}
@@ -296,13 +303,14 @@ $\theta$ & <含义> & <单位> \\
   language=Python
 }
 
-% 示例：每个源码文件一个小节（代码名 + 逐行行号）。取消注释并替换路径后启用：
-% \subsection*{B.1　code/main.py}
-% \lstinputlisting{../code/main.py}
+% 示例：每个子问题一个独立可运行脚本（problemN），共享代码按功能命名（如 data_io.py、geometry.m）并可按功能分多文件；不必展示一键 main。
+%       每个源码文件一个小节（代码名 + 逐行行号）。取消注释并替换路径后启用：
+% \subsection*{B.1　code/problem1.py}
+% \lstinputlisting{../code/problem1.py}
 %
-% \subsection*{B.2　code/utils.py}
-% \lstinputlisting{../code/utils.py}
+% \subsection*{B.2　code/data_io.py}
+% \lstinputlisting{../code/data_io.py}
 %
-% MATLAB 同理：\subsection*{B.3　code/opt.m} \lstinputlisting{../code/opt.m}
+% MATLAB 同理：\subsection*{B.3　code/problem1.m} \lstinputlisting{../code/problem1.m}
 
 \end{document}

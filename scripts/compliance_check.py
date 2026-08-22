@@ -7,13 +7,14 @@
 检查项（对齐 2025 国赛实战反馈的版式合规要求）:
   1. 页边距 >= 2.5cm            (tex geometry 配置)
   2. 页码页脚中部 + 摘要起从 1 连续  (fancyhdr 配置)
-  3. 摘要 <= 1 页                (PDF 实际页数/页序, 有 pypdf 时)
+  3. 摘要 <= 1 页；正文（不含参考文献与附录）<= 30 页（25 页最好）  (PDF 实际页数/页序)
   4. 图表全部居中                 (figure/table 环境内含 \\centering)
   5. 每条参考文献至少被 \\cite 一次  (\\bibitem vs \\cite 覆盖)
   6. 参考文献条数 >= 8
   7. 无官网/组委会条目            (URL 检查: 组委会/官网/cumcm 等)
   8. 匿名                        (无姓名/学校/指导老师 特征)
   9. 图/表编号完整且正文有引用      (figure/table 有 label 且被 \\ref)
+  10. AI 工具使用声明              (参考文献前有「AI工具使用声明」，默认使用 AI 版；支撑材料含 AI工具使用详情.pdf)
 
 退出码: 0 = 全部 PASS; 1 = 存在 FAIL/WARN。
 """
@@ -119,31 +120,73 @@ def check_refs_complete(text: str):
     return ("PASS", "图/表 label 与 \\ref 完整")
 
 
-def check_pdf_abstract_page(pdf_path: Path):
-    if not pdf_path.exists():
-        return ("SKIP", "未提供 PDF，跳过页数检查")
-    n_pages = None
+def _get_page_texts(pdf_path: Path):
+    """返回 (每页文本列表, 总页数)；失败返回 (None, 错误信息)。"""
     try:
         import fitz
         doc = fitz.open(str(pdf_path))
-        n_pages = doc.page_count
+        texts = [page.get_text() for page in doc]
+        total = len(texts)
         doc.close()
-    except Exception:
-        try:
-            import pypdf
-            n_pages = len(pypdf.PdfReader(str(pdf_path)).pages)
-        except Exception as e:
-            return ("SKIP", f"无法读取 PDF: {e}")
-    # 摘要页 = 第 1 页；检查第 1 页是否含「摘要」文本且不超 1 页
-    first_text = ""
-    try:
-        import fitz
-        doc = fitz.open(str(pdf_path))
-        first_text = doc[0].get_text()[:200]
-        doc.close()
+        return texts, total
     except Exception:
         pass
-    return ("PASS", f"PDF 共 {n_pages} 页，摘要从第 1 页起（正文页数请人工对照官方上限）")
+    try:
+        import pypdf
+        reader = pypdf.PdfReader(str(pdf_path))
+        texts = [(p.extract_text() or "") for p in reader.pages]
+        return texts, len(texts)
+    except Exception as e:
+        return None, f"无法读取 PDF: {e}"
+
+
+def _find_heading_page(texts, keyword, start=0):
+    """返回首次出现 keyword 标题行的页码（0-based）；找不到返回 None。"""
+    for i in range(start, len(texts)):
+        for raw in texts[i].splitlines():
+            s = raw.strip()
+            if s == keyword:
+                return i
+            if keyword == "附录" and (s.startswith("附录 A") or s.startswith("附录 B")
+                                      or s.startswith("附录A") or s.startswith("附录B")):
+                return i
+    return None
+
+
+def check_pdf_pages(pdf_path: Path):
+    """检查页数：摘要 ≤1 页；正文（不含参考文献与附录）≤30 页，25 页最好。"""
+    if not pdf_path.exists():
+        return ("SKIP", "未提供 PDF，跳过页数检查")
+    texts, total = _get_page_texts(pdf_path)
+    if texts is None:
+        return ("SKIP", str(total))
+    # 摘要页 = 第 1 页；正文从第 2 页（摘要之后）起
+    body_start = 1  # 0-based
+    ref_page = _find_heading_page(texts, "参考文献", start=body_start)
+    app_page = _find_heading_page(texts, "附录", start=body_start)
+    markers = [p for p in (ref_page, app_page) if p is not None]
+    if not markers:
+        return ("SKIP", f"PDF 共 {total} 页（摘要从第 1 页起）；未定位参考文献/附录起始页，正文页数请人工核对（要求正文≤30 页，25 页最好）")
+    body_end = min(markers)
+    body_pages = body_end - body_start
+    if body_pages > 30:
+        return ("FAIL", f"PDF 共 {total} 页；正文（不含参考文献与附录）约 {body_pages} 页，超过 30 页上限")
+    if body_pages > 25:
+        return ("WARN", f"PDF 共 {total} 页；正文（不含参考文献与附录）约 {body_pages} 页，已 ≤30 页但高于推荐 25 页")
+    return ("PASS", f"PDF 共 {total} 页；摘要≤1 页；正文（不含参考文献与附录）约 {body_pages} 页（要求≤30，25 最好）")
+
+
+def check_ai_declaration(text: str):
+    """检查 AI 工具使用声明：参考文献前有「AI工具使用声明」，且为二者择一（默认使用 AI 版）。"""
+    if "AI工具使用声明" not in text:
+        return ("FAIL", "未找到「AI工具使用声明」章节（应放在参考文献前）")
+    used = "本参赛队在竞赛过程中使用了AI工具" in text
+    notused = "本参赛队在竞赛过程中未使用任何AI工具" in text
+    if used:
+        return ("PASS", "「AI工具使用声明」已声明使用 AI（默认口径），支撑材料需含 AI工具使用详情.pdf")
+    if notused:
+        return ("PASS", "「AI工具使用声明」已声明未使用 AI")
+    return ("FAIL", "「AI工具使用声明」内容非二者择一（未使用 / 使用 AI）")
 
 
 def main() -> int:
@@ -166,7 +209,8 @@ def main() -> int:
         ("官网/组委会条目", check_no_official_url(text)),
         ("匿名", check_anonymous(text)),
         ("图/表引用完整", check_refs_complete(text)),
-        ("摘要页数", check_pdf_abstract_page(pdf)),
+        ("页数（摘要≤1页/正文≤30页）", check_pdf_pages(pdf)),
+        ("AI工具使用声明", check_ai_declaration(text)),
     ]
     failed = 0
     for name, (status, msg) in checks:

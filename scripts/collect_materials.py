@@ -103,6 +103,17 @@ def main() -> int:
     code_table.append("")
     code_table.append(f"> 共 {n_code} 个源程序（求解/模型代码），已按文件展开（文件名 + 逐行行号）；生图脚本 {n_plot} 个不展示。")
 
+    # 5) AI 工具使用详情（国赛规定：使用 AI 必含 AI工具使用详情.pdf）
+    ai_src = ws / "AI工具使用详情.pdf"
+    tpl = Path(__file__).resolve().parent.parent / "templates" / "AI工具使用详情.md"
+    if ai_src.exists():
+        shutil.copy2(ai_src, out / "AI工具使用详情.pdf")
+        ai_note = "AI工具使用详情.pdf：已收集（工作区根目录 / AI工具使用详情.pdf）"
+    else:
+        if tpl.exists():
+            shutil.copy2(tpl, out / "AI工具使用详情.md")
+        ai_note = "AI工具使用详情：未找到 PDF，已生成模板 materials/AI工具使用详情.md，请填写后导出为 PDF（命名 AI工具使用详情.pdf）"
+    manifest.append(ai_note)
     (out / "附录A_支撑材料目录.md").write_text("\n".join(manifest), encoding="utf-8")
     (out / "附录B_代码表格.md").write_text("\n".join(code_table), encoding="utf-8")
 
