@@ -32,7 +32,7 @@
 % 二级/三级：黑体小四，保留阿拉伯编号（1.1 / 1.1.1）
 \ctexset{
   section = {
-    format = \heiti\zihao{4},
+    format = \centering\heiti\zihao{4},
     name   = {,、},
     aftername = {},
     beforeskip = 1.2ex,
@@ -84,13 +84,13 @@
 % 图表插入模板（复制到目标位置后取消注释并替换占位内容）
 %
 % 图：图前引导文字 -> \begin{figure} -> 图后解释文字
-% 图注五要素：①展示什么 ②支撑哪问 ③关键趋势/结果 ④数据来源(脚本/表格) ⑤验证含义(若是验证图)
+% 图注要点：①展示什么 ②关键趋势/结果 ③验证含义(若是验证图)；禁止「支撑哪问/数据来源」流程解释
 % 题注排版：单独一行并居中；caption 内【不写】「图 N：」/「表 N：」前缀——编号由 \caption 自动生成，
 %            手写前缀会造成「图 10: 图 10：…」图号重复
 % \begin{figure}[H]
 %   \centering
-%   \includegraphics[width=0.85\textwidth]{../figures/fig_q1_result.pdf}  % LaTeX 用矢量 PDF；Word 用同目录 PNG
-%   \caption{<展示什么>。该图支撑<问题 N>，结果表明<关键趋势/结果>，数据来源<脚本/表>。}
+%   \includegraphics[width=0.85\textwidth]{../figures/fig_q1_result.png}  % LaTeX 与 Word 均用 PNG
+%   \caption{<展示什么>，结果表明<关键趋势/结果>。}
 %   \label{fig:q1_result}
 % \end{figure}
 %
@@ -117,32 +117,54 @@
 <先总述已知条件，再按本质归类子问题（如：问题一、二为单机单弹求值→优化；问题三为多弹时序规划；问题四为多机空间协同；问题五为任务分配+资源调度）。>
 % ⚠️ 禁止写「结果填入 resultX.xlsx」这类话术，全部用建模化措辞。
 
-\begin{enumerate}[leftmargin=2em,itemsep=1pt]
-\item \textbf{问题 1}：<……>
-\item \textbf{问题 2}：<……>
-\item \textbf{问题 3}：<……>
-\item \textbf{问题 4}：<……>
-\item \textbf{问题 5}：<……>
-\end{enumerate}
+% 问题列表：直接写「问题一：」…文本编号，不用 enumerate 自动编号（避免「1. 问题 1」重复编号）
+\begin{itemize}[leftmargin=2em,itemsep=1pt,label={}]
+\item \textbf{问题一}：<……>
+\item \textbf{问题二}：<……>
+\item \textbf{问题三}：<……>
+\item \textbf{问题四}：<……>
+\item \textbf{问题五}：<……>
+\end{itemize}
 
 % ========== 二、问题分析 ==========
 \section{问题分析}
-% 每问独立分节，每节四步法：①与前问关系 ②分步求解路线 ③本问特有难点 ④落点（建什么模型）
-% 🔎 插入时机：节首放 1 张全题技术路线图（fig_route_overview，逐问解题路径总览）；每问分析分节后再放 1 张该问解题路径流程图
+% 结构（2024A 复盘升级，范式详见 references/05-论文写作.md）：2.1 总体分析 + 2.2~2.6 逐问五步法；篇幅 1.5~2 页
+<总起段：一句话总述五问共用内核与依赖关系，引出技术路线图。>
+
+% 🔎 节首放 1 张全题技术路线图（fig_route_overview.png，逐问解题路径总览），图前有引导文字：
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=1.0\textwidth]{fig_00_route_overview.png}
+%   \caption{<全题技术路线图：五问的建模目标、求解路线、输出与难点突破，标注共享内核与依赖关系。>}
+%   \label{fig:route}
+% \end{figure}
+
+% ---- 2.1 总体分析（新增分节，必写）----
+% 三段式：①本质归类（一句话系统类型 + 落点 + 为什么不能降维）
+%         ②核心矛盾/耦合主线（2~4 条，每条 = 一句话机理 + 对应建模手段，主线数 = 后文模型模块数）
+%         ③量级观察与风险锁定（用题给数据估算量级 → 预测关键现象，后文结果处呼应）
+%         （可选）④分层结构与递进关系（子问题信息流与复用）
+\subsection{总体分析}
+<本质归类：本题在本质上是一个"<系统>"的<类型>问题：<对象与约束>……；落点不是<单点/局部>描述，而是<系统级统一求解>。与<更简单模型>不同，须同时处理 N 类本质耦合：其一是<机理>→ 对应<建模手段>；其二是……；其三是……。>
+<量级观察：由题给数据估算……（总长/跨越圈数/间隙与尺寸对比/时间尺度），可预测<关键现象>，因此<后文某问>正是对这一过程的刻画。>
+
+% ---- 2.2~2.6 逐问分节：五步法 ----
+% 每节五步：①与前问关系 ②分步求解路线 ③机理层"为什么"（本质原因，非步骤复述）
+%           ④本问特有难点 ⑤落点（建什么模型）；（推荐）⑥数值佐证（题给参数或已算结果）
 \subsection{问题一分析}
-<① 与前问关系；② 求解路线；③ 难点；④ 落点。>
+<① 与前问关系；② 求解路线；③ 机理为什么……；④ 难点；⑤ 落点。数值佐证：……。>
 
 \subsection{问题二分析}
-<同上四步。>
+<同上五步。>
 
 \subsection{问题三分析}
-<同上四步。>
+<同上五步。>
 
 \subsection{问题四分析}
-<同上四步。>
+<同上五步。>
 
 \subsection{问题五分析}
-<同上四步。>
+<同上五步。>
 
 % ========== 三、模型假设 ==========
 \section{模型假设}
@@ -191,6 +213,17 @@ $\theta$ & <含义> & <单位> \\
 \subsection{问题一：<名称>}
 \subsubsection{模型的建立}
 <四段式：①情形及与前问关系 ②决策变量与目标函数 ③约束条件 ④建立公式/方程。>
+% 优化模型展示：目标函数 + s.t. + 大括号约束组（思考/推导过程逐步写在正文，禁止只贴最终模型）
+% \begin{align}
+%   \max_{x}\quad & f(x) \\
+%   \text{s.t.}\quad & \left\{
+%   \begin{array}{ll}
+%     g_i(x)\le 0, & i=1,2,\dots,m,\\[2pt]
+%     h_j(x)=0, & j=1,2,\dots,n,\\[2pt]
+%     x\in \mathcal{X}.
+%   \end{array}
+%   \right.
+% \end{align}
 \begin{equation}
 \label{eq:q1}
 <公式>
@@ -263,8 +296,16 @@ $\theta$ & <含义> & <单位> \\
 % 若确未使用 AI，改用下句并删掉上面那句：
 % 本参赛队在竞赛过程中未使用任何AI工具。
 
+% 注：可在正文/参考文献中 \cite 所用 AI 模型，并在参考文献同步加该模型版本条目（见 references/05、13）
+
 % ========== 参考文献 ==========
 % 规则：只保留 thebibliography；不少于 8 条学术文献；每条至少被正文 \cite 一次；删除官网/组委会条目
+% 参考文献标题：居中（\renewcommand{\refname}{} 抑制自动标题后手动居中输出）
+\renewcommand{\refname}{}
+\begin{center}
+{\zihao{4}\heiti 参考文献}
+\end{center}
+\vspace{1.0ex}
 \begin{thebibliography}{99}
 \bibitem{ref1} <作者. 标题. 期刊, 年份, 卷(期): 页码.>
 \bibitem{ref2} <作者. 标题. 会议/期刊, 年份.>

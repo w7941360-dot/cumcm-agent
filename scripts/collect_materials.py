@@ -80,10 +80,10 @@ def main() -> int:
     n_fig = 0
     if fig_dir.is_dir():
         for f in sorted(fig_dir.iterdir()):
-            if f.is_file():
+            if f.is_file() and f.suffix.lower() == ".png":
                 shutil.copy2(f, fig_out / f.name)
                 n_fig += 1
-    manifest.append(f"## 中间图表（{n_fig} 个文件）")
+    manifest.append(f"## 中间图表（{n_fig} 个 PNG）")
 
     # 3) 结果数据
     n_data = 0
