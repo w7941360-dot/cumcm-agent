@@ -40,7 +40,7 @@
 
 | 子问题 | 依赖关系 | 建模路线 | 引擎 | 决策变量 | 硬约束（额定/上限/窗口） | 全模型（入口） | 代理模型（入口） | 单次计算成本 | 预算分配(min) | 代码入口 | 结果文件 | 官方模板及列名 | 失败预案 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Q1 | - | 机理建模 | py | - | - | code/q1_full.py | code/q1_fast.py | 约 Xs/次 | 120 | main.py 函数 q1() | results/result1.xlsx | attachments/result1 模板：列 A..C | 无解→换截断模型 |
+| Q1 | - | 机理建模 | py | - | - | code/q1_full.py | code/q1_fast.py | 约 Xs/次 | 120 | code/problem1.py | results/result1.xlsx | attachments/result1 模板：列 A..C | 无解→换截断模型 |
 
 ## 9. 官方附件清单（登记题面/官方要求的每个 resultN.xlsx 等）
 | 附件名 | 用途 | 模板来源（题面/官方样例） | 表头/列序/取值约束 |

@@ -9,7 +9,7 @@ description: 全国大学生数学建模竞赛（CUMCM，国赛）全流程自�
 
 ## 使用方式
 
-1. 向用户索取：**赛题 PDF** 与 **原始数据表格（xlsx/csv 等）**；询问参赛年份，并**核对当年官方规则**（正文页数上限、匿名要求、提交格式）。
+1. 向用户索取：**赛题 PDF** 与 **原始数据表格（xlsx/csv 等）**；询问参赛年份，并**核对当年官方规则**（匿名要求、提交格式等）；正文页数目标：**正文（不含参考文献与附录）≤ 30 页，25 页最好**。
 2. **确认求解引擎偏好**（调用 skill 时一次性问清，写入 `plan/solution_manifest.json` 的 `engine` 字段）：纯 MATLAB / 纯 Python / Python+MATLAB 混合。本机已装 MATLAB R2025b；重数值（ODE/PDE/全局优化/布局优化）推荐 MATLAB，重数据（xlsx/JSON/字符串）推荐 Python，想要两套实现互验的强交叉验证推荐混合（决策指引见 `references/03-编程实现.md`）。**混合 = 各取所长**：Python 干数据/胶水活，MATLAB 干重数值活，另一引擎做独立交叉验证，按 `references/03-编程实现.md` 的『混合模式执行手册』自动分工。
 3. 初始化工作区（见下；目录名以用户指定为准）。
 4. 按 8 步流水线逐步骤执行，每步先读对应 `references/` 文件、套用 `templates/` 模板，完成后停下汇报。
@@ -76,7 +76,7 @@ cumcm-2026/            # 示例目录名，以用户指定为准
 │   └── solution_manifest.json  # 步骤1 产出的机器可读全链路矩阵（solution_audit.py 读取）
 ├── MODELING_REPORT.md   # 步骤2 产出
 ├── SOLUTION_ACCEPTANCE_CONTRACT.md  # 步骤1-2 求解验收契约（优化题必写）
-├── code/                # 步骤3 产出（main.py 等 + run_registry.json 运行台账）
+├── code/                # 步骤3 产出（problem1.py / problem2.py 等 + run_registry.json 运行台账）
 ├── RESULTS.md           # 步骤3 产出
 ├── figures/             # 步骤4/5 产出
 ├── paper/               # 步骤6/7 产出（main.tex / main.pdf / main.docx）
@@ -124,22 +124,24 @@ cumcm-2026/            # 示例目录名，以用户指定为准
 
 ### 步骤 4 — 图表生成 → `figures/`
 - 读 `references/04-图表规范.md`
+- **本步骤只出「数据图」**（基于数值结果/数据，见 `references/04` 的「数据图 vs 非数据图」分界）：用 matplotlib / MATLAB 从数据生成，图内数字**必须可溯源**（与 `resultN.xlsx`/运行输出一致）；专业彩色/灰度配色（色盲友好、灰度可区分）、矢量/高分辨率、坐标轴规范；正确性规则必守，风格可商量
 - 示意图检查清单见 `references/12-实战复盘与常见坑.md`：黑白或学术彩色均可、严谨细致、箭头方向逐图核对、图内大字号不重叠、文字不出框
-- 生成论文级图表：**专业彩色/灰度配色**（色盲友好色板、灰度可区分）、矢量/高分辨率、坐标轴规范；正确性规则（事实）必守，风格规则可商量
 - A 题典型图：解曲面/热图/等高线、时空演化、参数扫描、收敛性、灵敏度；优化题另加：优化收敛曲线、范式对比图、约束边界图
 - **先做图表规划再出图**：全题配技术路线图 + 工作机理示意图；每个已求解子问题默认 ≥3 张（工作机理示意图 + 算法流程图 + 结果图），验证/灵敏度分析另加 1 张检查图；只有表格明显更清楚时才少画图并说明原因
 - 图注写「展示什么 + 关键结果/验证含义」；**不写**「支撑哪问/数据来源」这类流程解释（见 references/04 图注要点）
 
 ### 步骤 5 — 流程图/架构图 → `figures/`
-- 画：①**全题技术路线图** ②**全题工作机理示意图**（可并入态势图）③每问**算法流程图/模型框架图**（draw.io / mermaid / HTML→PDF 均可，输出矢量文件给 LaTeX 引用）
+- **本步骤只出「非数据图」**（不基于数据，见 `references/04` 的「数据图 vs 非数据图」分界）：①**全题技术路线图** ②**全题工作机理示意图**（可并入态势图）③每问**算法流程图/模型框架图**
+- **首选 Draw.io**（流程见 `references/14-DrawIO出图.md`）：`python scripts/diagram_gen.py <清单.json> <图名.drawio>` 生成可编辑 `.drawio` → 需要人工微调就打开 Draw.io 改 → `drawio.exe --export --format svg|pdf|png` 导出矢量/PNG 到 `figures/`（源文件 `.drawio` 与 JSON 保留）
+- 备选：mermaid / HTML→PDF；输出矢量文件给 LaTeX 引用
 - ⚠️ 为保证 LaTeX→Word 转换成功，**架构图用外部图片文件（`\includegraphics` 引用），不要用内嵌 TikZ 代码**
 
 ### 步骤 6 — 论文撰写 → `paper/main.tex`
 - 读 `references/05-论文写作.md`，用 `templates/paper/main.tex` 骨架
 - **动笔前先定验收标准**：用 `templates/PAPER_ACCEPTANCE_CONTRACT.md` 写 `PAPER_ACCEPTANCE_CONTRACT.md`（读 `references/08-验收契约.md`），请用户确认（10-20 条可检验断言）
-- 写完整论文：摘要单独一页、正文按当年官方页数上限
+- 写完整论文：摘要单独一页（≤1 页）、正文（不含参考文献与附录）≤ 30 页，25 页最好
+- **AI 使用声明**：参考文献前独立成段（默认「使用 AI」版，见 `references/13-AI工具使用规范.md`）并 `\cite` 所用 AI 模型；参考文献中加 AI 模型版本条目（详见 references/05、13）
 - **标题居中**：汉字编号一级标题与「参考文献」标题都要居中
-- **AI 使用声明**：参考文献前独立成段加声明并 `\cite` 所用 AI 模型；参考文献中加 AI 模型版本条目（详见 references/05）
 - **问题重述**：五个子问题直接写「问题一：」…文本编号，不用 enumerate 自动编号（避免「1. 问题 1」重复编号）
 - **按 `references/04-图表规范.md` 的插入时机放图表**：每章放对应图（问题分析流程图/模型准备态势图/每问流程+结果图/灵敏度图），图前有引导、图后必有解释，连续图表间必须有文字，正文解释文字多于图表
 - ✅ 检查点（approve，Type-B 由用户判定）：用户批准后继续
@@ -148,8 +150,8 @@ cumcm-2026/            # 示例目录名，以用户指定为准
 - 读 `references/06-编译与合规.md`
 - **Word**：用 pandoc 由 LaTeX 导出 `paper/main.docx`（`pandoc main.tex -o main.docx`）——已实测可用
 - **PDF**：优先本机本地编译（xelatex，见「环境预置」，本机已装 MiKTeX 25.12）；本地不可用时回退 Overleaf / TeX Live.net（上传 main.tex + figures/，编译器选 XeLaTeX，下载 main.pdf）
-- **合规检查**：跑 `python scripts/compliance_check.py paper [paper/main.pdf]`，要求无 FAIL（摘要≤1页/页码页脚中部/图表居中/每条文献被\\cite/页边距/匿名/图表明细）
-- **同步纪律**：每次改 main.tex 后重编 PDF（检查退出码与 log）+ 重导 Word + 重跑合规；Windows 控制台先 `$env:PYTHONIOENCODING='utf-8'`（详见 references/06、12）
+- **合规检查**：跑 `python scripts/compliance_check.py paper [paper/main.pdf]`，要求无 FAIL（摘要≤1页/页码页脚中部/图表居中/每条文献被\cite/页边距/匿名/图表明细/AI工具使用声明）
+- **同步纪律**：每次改 main.tex 后重编 PDF（检查退出码与 log）+ 重导 Word + 重跑合规；Windows 控制台先 `$env:PYTHONIOENCODING="utf-8"`（详见 references/06、12）
 - ✅ 检查点（Type-A）：PDF 与 Word 都成功生成，且合规检查无 FAIL，用户批准进入步骤 8
 
 ### 步骤 8 — 改进循环 → 修订终稿
@@ -157,10 +159,10 @@ cumcm-2026/            # 示例目录名，以用户指定为准
 - ① **Type-A 机器审计**：
   - **求解交付审计**（先做）：跑 `python scripts/solution_audit.py <工作区> --mode deliverable`，要求 PASS（每问代码/结果/官方附件齐全，resultN.xlsx 非空非模板且表头/列序合规，硬约束由全模型结果满足）；优化题再跑 `--mode optimization`（代理保真度、范式切换、预算、空/中断误判），要求 PASS
   - 证据预检：把摘要/结论里的关键数字整理成 `claims.json`，跑 `python scripts/evidence_check.py <工作区> --batch claims.json`，要求全部 `verified`
-  - 页数/公式渲染/图表引用/匿名/参考文献 逐项机器检查（PDF 与 Word 各查一遍）
+  - 页数/公式渲染/图表引用/匿名/参考文献/AI工具使用声明 逐项机器检查（PDF 与 Word 各查一遍）
 - ② **Type-B 验收**：按 `PAPER_ACCEPTANCE_CONTRACT.md` 逐条核对，**由用户判定**未过项；列出未过项 → 修复 → 重编译 → 复验
 - ③ 可选：若用户提供另一个模型的 API，可做独立审稿（审稿人**直接读原始文件**，不喂摘要/不引导结论）
-- ④ **支撑材料收集**：跑 `python scripts/collect_materials.py <工作区>`，生成 `materials/`（源程序+中间图表+结果数据+附录A/B清单）
+- ④ **支撑材料收集**：跑 `python scripts/collect_materials.py <工作区>`，生成 `materials/`（源程序+中间图表+结果数据+附录A/B清单+**AI工具使用详情** `AI工具使用详情.pdf`，使用 AI 时必含，见 `references/13-AI工具使用规范.md`）
 - **停止条件 = Type-A 全过 + 用户验收通过**（含 `solution_audit.py` 与 `evidence_check.py` 全过、每问有全模型结果、全部官方附件存在且合规）。Codex 不得以"我觉得改好了"为由停止。
 - **交付口径（只交 3 样）**：① `paper/main.docx`（Word 论文）② `paper/main.pdf`（PDF 论文）③ `materials/`（支撑材料文件夹）；其余中间产物留在过程目录不上交
 
@@ -174,7 +176,8 @@ cumcm-2026/            # 示例目录名，以用户指定为准
 - **论文里每个数字必须可溯源**：步骤8 用 `scripts/evidence_check.py` 做证据预检（Type-A 门禁）
 - **Codex 不得自我宣判"论文合格/完成"**：Type-B 一律由用户判定
 - 图表配色专业、灰度可区分（若需打印评审则提供灰度兼容版本）；正确性规则必守，风格规则可商量
-- 论文必须匿名（不出现姓名/学校/指导教师），符合当年页数限制
+- 论文必须匿名（不出现姓名/学校/指导教师），正文（不含参考文献与附录）≤ 30 页，25 页最好
+- **AI 工具声明**：论文在参考文献前有「AI工具使用声明」（本 skill 默认「使用 AI」版）；使用 AI 则支撑材料须含 `AI工具使用详情.pdf`（命名固定，含工具/版本/用途/提示方式/采纳与核验）
 - **终稿双格式交付**：PDF（参赛提交）+ Word（`main.docx`，由 LaTeX 经 pandoc 导出；导出的 Word 是内容骨架，最终按学校模板微调）
 - **交付口径 3 样**：Word 论文 + PDF 论文 + 支撑材料文件夹（`materials/`）；参考文献 ≥8 条且每条正文有 \\cite，无官网/组委会条目
 - A 题优先机理建模：守恒/平衡方程 → 数值求解 → 灵敏度与稳定性分析，避免纯数据拟合

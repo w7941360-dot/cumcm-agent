@@ -1,0 +1,91 @@
+{
+  "title": "全题技术路线图",
+  "direction": "TB",
+  "page": {
+    "width": 850,
+    "height": 1100
+  },
+  "nodeW": 180,
+  "nodeH": 54,
+  "gapX": 80,
+  "gapY": 40,
+  "nodes": [
+    {
+      "id": "n1",
+      "label": "赛题分析与数据读取",
+      "kind": "start"
+    },
+    {
+      "id": "n2",
+      "label": "问题重述 / 模型假设 / 符号说明",
+      "kind": "process"
+    },
+    {
+      "id": "n3",
+      "label": "建模与公式推导（机理/优化）",
+      "kind": "process"
+    },
+    {
+      "id": "n4",
+      "label": "求解：算法设计与编程仿真",
+      "kind": "process"
+    },
+    {
+      "id": "n5",
+      "label": "结果是否满足要求？",
+      "kind": "decision"
+    },
+    {
+      "id": "n6",
+      "label": "灵敏度 / 稳健性 / 误差分析",
+      "kind": "process"
+    },
+    {
+      "id": "n7",
+      "label": "调整假设 / 参数 / 范式",
+      "kind": "box"
+    },
+    {
+      "id": "n8",
+      "label": "结果整理与论文撰写",
+      "kind": "end"
+    }
+  ],
+  "edges": [
+    {
+      "source": "n1",
+      "target": "n2"
+    },
+    {
+      "source": "n2",
+      "target": "n3"
+    },
+    {
+      "source": "n3",
+      "target": "n4"
+    },
+    {
+      "source": "n4",
+      "target": "n5"
+    },
+    {
+      "source": "n5",
+      "target": "n6",
+      "label": "是"
+    },
+    {
+      "source": "n5",
+      "target": "n7",
+      "label": "否"
+    },
+    {
+      "source": "n7",
+      "target": "n4",
+      "label": "回退"
+    },
+    {
+      "source": "n6",
+      "target": "n8"
+    }
+  ]
+}

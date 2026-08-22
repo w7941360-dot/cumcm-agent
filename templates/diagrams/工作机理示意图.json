@@ -1,0 +1,80 @@
+{
+  "title": "全题工作机理示意图",
+  "direction": "TB",
+  "page": {
+    "width": 900,
+    "height": 700
+  },
+  "nodeW": 150,
+  "nodeH": 60,
+  "nodes": [
+    {
+      "id": "env",
+      "label": "环境 / 边界条件",
+      "kind": "io",
+      "x": 40,
+      "y": 230
+    },
+    {
+      "id": "sys",
+      "label": "核心系统（本问对象）",
+      "kind": "box",
+      "x": 280,
+      "y": 180,
+      "w": 220,
+      "h": 160
+    },
+    {
+      "id": "in",
+      "label": "输入量",
+      "kind": "process",
+      "x": 40,
+      "y": 120
+    },
+    {
+      "id": "out",
+      "label": "输出量 / 响应",
+      "kind": "process",
+      "x": 600,
+      "y": 180
+    },
+    {
+      "id": "const",
+      "label": "守恒 / 平衡 方程",
+      "kind": "note",
+      "x": 280,
+      "y": 40,
+      "w": 220,
+      "h": 80
+    },
+    {
+      "id": "ver",
+      "label": "验证 / 对比",
+      "kind": "decision",
+      "x": 600,
+      "y": 330
+    }
+  ],
+  "edges": [
+    {
+      "source": "const",
+      "target": "sys"
+    },
+    {
+      "source": "in",
+      "target": "sys"
+    },
+    {
+      "source": "env",
+      "target": "sys"
+    },
+    {
+      "source": "sys",
+      "target": "out"
+    },
+    {
+      "source": "out",
+      "target": "ver"
+    }
+  ]
+}
