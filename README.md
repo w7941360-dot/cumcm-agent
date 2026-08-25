@@ -69,7 +69,7 @@ cumcm-agent/
 │   ├── compliance_check.py       # 论文版式/引用/匿名自动合规检查
 │   ├── solution_audit.py         # 求解交付与优化纪律审计（deliverable/optimization 双模式）
 │   └── collect_materials.py      # 支撑材料收集器（附录A/B 清单）
-├── references/                   # 12 份执行指南（01 赛题分析 ~ 11 带硬指标的设计优化 + 12 实战复盘与常见坑）
+├── references/                   # 16 份执行指南（01 赛题分析 ~ 12 实战复盘与常见坑 + 13-AI工具使用规范 + 14-DrawIO出图 + 15-优化模型表示 + 16-A题方法与算法知识库）
 ├── templates/                    # 赛题分析/建模报告/结果/论文tex/验收契约/求解验收契约模板
 └── tests/                        # 通用回归验收模板（参数化，不绑定具体赛题）
 ```
