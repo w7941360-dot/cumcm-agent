@@ -11,7 +11,7 @@
   - 附录A_支撑材料目录.md（清单）
   - 附录B_代码表格.md（每问求解/模型代码明细：文件名 + 逐行行号，不含生图代码）
 
-交付口径：只交 3 样——Word 论文、PDF 论文、支撑材料文件夹。
+交付口径：只交 2 样——PDF 论文、支撑材料文件夹。
 """
 
 from __future__ import annotations
@@ -120,7 +120,7 @@ def main() -> int:
     print(f"✅ 支撑材料已生成: {out}")
     print(f"   源程序 {n_code} 个 / 图表 {n_fig} 个 / 数据 {n_data} 个")
     print("   附录A_支撑材料目录.md + 附录B_代码表格.md 已生成，内容可粘贴进论文附录")
-    print("交付口径：Word 论文 + PDF 论文 + 支撑材料文件夹，共 3 样。")
+    print("交付口径：PDF 论文 + 支撑材料文件夹，共 2 样。")
     return 0
 
 

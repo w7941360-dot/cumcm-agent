@@ -1,6 +1,6 @@
 # 12 Draw.io 出图（流程图 / 架构图 / 示意图）
 
-> 用途：生成「全题技术路线图」「全题工作机理示意图」「每问算法流程图/模型框架图」。这套流程既能让我精准生成，又能让你在 Draw.io 里**手动拖拽修改**，再直接对接 LaTeX（矢量）与 Word（PNG）。
+> 用途：生成「全题技术路线图」「全题工作机理示意图」「每问算法流程图/模型框架图」。这套流程既能让我精准生成，又能让你在 Draw.io 里**手动拖拽修改**，再直接对接 LaTeX（矢量）与论文插图（PNG）。
 
 ## 工具
 - **Draw.io 桌面版（本机已装）**：`C:\Users\21662\AppData\Local\Programs\draw.io\draw.io.exe`
@@ -21,8 +21,8 @@
 2. **你修改**：双击 `.drawio` 用 Draw.io 打开，随意拖节点、改文字、调箭头/配色——这是**可编辑源**。
 3. **导出进论文**：
    - LaTeX 用**矢量**：`--format svg` 或 `--format pdf`
-   - Word 用**位图**：`--format png`
-   - LaTeX 里 `\includegraphics{../figures/技术路线图.pdf}`；Word 版同目录放 PNG。
+   - 论文插图用**位图**：`--format png`
+   - LaTeX 里 `\includegraphics{../figures/技术路线图.pdf}`；PNG 同目录备用。
 
 ## 清单 JSON 说明
 ```json
@@ -60,4 +60,4 @@
 ## 与论文衔接
 - 图注按「五要素」写（见 `references/04-图表规范.md`）；图前有引导文字、图后有解释。
 - **保留 `.drawio` 源文件**与清单 JSON（放工作区 `figures/` 旁或 `templates/diagrams/`），导出的 SVG/PDF/PNG 只是最终产物；后续改图改源文件重导，别直接改位图。
-- 架构/流程类图**必须**用外部图片文件（`\includegraphics`）引用，不要内嵌 TikZ（保证 LaTeX→Word 可转换）。
+- 架构/流程类图**必须**用外部图片文件（`\includegraphics`）引用，不要内嵌 TikZ（保证 LaTeX 稳定编译）。

@@ -28,7 +28,7 @@ description: 全国大学生数学建模竞赛（CUMCM，国赛）全流程自�
 
 ## 环境预置（开始前）
 
-运行流水线前，确认本机已具备以下环境（缺哪个装哪个）。本机（2026-08 实测）已按此清单就绪：Python 3.13.5 + MiKTeX 25.12（xelatex 4.16）+ pandoc 2.12 + Word 16，正式 main.tex 可本地编译。
+运行流水线前，确认本机已具备以下环境（缺哪个装哪个）。本机（2026-08 实测）已按此清单就绪：Python 3.13.5 + MiKTeX 25.12（xelatex 4.16），正式 main.tex 可本地编译。
 
 ### 必需
 
@@ -36,7 +36,6 @@ description: 全国大学生数学建模竞赛（CUMCM，国赛）全流程自�
 |------|------|------------|
 | 求解 / 出图 / 结果文件 | Python 3.13+（Anaconda）+ numpy、scipy、matplotlib、openpyxl、pandas、pillow、pypdf、pypdfium2 | 安装：`pip install numpy scipy matplotlib openpyxl pandas pillow pypdf pypdfium2`；校验：python 可正常 import 上述库 |
 | PDF 论文（中文） | XeLaTeX（MiKTeX 或 TeX Live，含 ctex / xecjk 宏包） | Windows 安装：`winget install MiKTeX.MiKTeX --silent`；配国内镜像与缺包自动安装：`mpm --set-repository=https://mirrors.ustc.edu.cn/CTAN/systems/win32/miktex/tm/packages/`、`initexmf --set-config-value=[MPM]AutoInstall=1`；校验：`xelatex --version` |
-| Word 论文 | pandoc + Microsoft Word | 安装：`winget install JohnMacFarlane.Pandoc`；Word 用 COM 验证 docx 图片渲染 |
 | PDF 合规检查 | pypdf / pypdfium2 | 随 Python 一并安装 |
 
 ### 可选
@@ -49,7 +48,7 @@ description: 全国大学生数学建模竞赛（CUMCM，国赛）全流程自�
 
 - PATH 更新只对新终端生效；当前会话可用完整路径调用 xelatex
 - 首次编译会自动补装宏包，依赖 USTC / CTAN 镜像，需联网
-- 论文 PDF 优先本地 xelatex 编译（离线可用）；Word 版用 pandoc + PNG 图，保证 Word 里图片可显示
+- 论文 PDF 优先本地 xelatex 编译（离线可用，矢量/高清）；图表统一 PNG（≥300 dpi）或矢量
 
 ## 门禁分级（Acceptance Gate）— 核心原则
 
@@ -57,7 +56,7 @@ description: 全国大学生数学建模竞赛（CUMCM，国赛）全流程自�
 
 | 类型 | 定义 | 例子 | 谁判定 |
 |------|------|------|--------|
-| **Type-A 执行/客观门禁** | 机器可检查的事实 | PDF 编译成功、Word 导出成功、`evidence_check.py` 全过、`solution_audit.py` 全过（每问交付完整/优化纪律）、页数合规、公式无 undefined | Codex 可自行判定 |
+| **Type-A 执行/客观门禁** | 机器可检查的事实 | PDF 编译成功、`evidence_check.py` 全过、`solution_audit.py` 全过（每问交付完整/优化纪律）、页数合规、公式无 undefined | Codex 可自行判定 |
 | **Type-B 质量/正确性门禁** | 需要品味与领域判断 | "论文合格了""模型是对的""摘要很突出" | **必须由用户判定**（或用户提供的另一模型），Codex 绝不自我宣判 |
 
 应用规则：
@@ -79,7 +78,7 @@ cumcm-2026/            # 示例目录名，以用户指定为准
 ├── code/                # 步骤3 产出（problem1.py / problem2.py 等 + run_registry.json 运行台账）
 ├── RESULTS.md           # 步骤3 产出
 ├── figures/             # 步骤4/5 产出
-├── paper/               # 步骤6/7 产出（main.tex / main.pdf / main.docx）
+├── paper/               # 步骤6/7 产出（main.tex / main.pdf）
 ├── PAPER_ACCEPTANCE_CONTRACT.md  # 步骤6 动笔前定验收标准
 ├── claims.json          # 步骤8 证据预检输入（关键数字+出处）
 ├── COMP_REVIEW.md       # 步骤8 审计记录
@@ -134,7 +133,7 @@ cumcm-2026/            # 示例目录名，以用户指定为准
 - **本步骤只出「非数据图」**（不基于数据，见 `references/04` 的「数据图 vs 非数据图」分界）：①**全题技术路线图** ②**全题工作机理示意图**（可并入态势图）③每问**算法流程图/模型框架图**
 - **首选 Draw.io**（流程见 `references/14-DrawIO出图.md`）：`python scripts/diagram_gen.py <清单.json> <图名.drawio>` 生成可编辑 `.drawio` → 需要人工微调就打开 Draw.io 改 → `drawio.exe --export --format svg|pdf|png` 导出矢量/PNG 到 `figures/`（源文件 `.drawio` 与 JSON 保留）
 - 备选：mermaid / HTML→PDF；输出矢量文件给 LaTeX 引用
-- ⚠️ 为保证 LaTeX→Word 转换成功，**架构图用外部图片文件（`\includegraphics` 引用），不要用内嵌 TikZ 代码**
+- ⚠️ **架构图用外部图片文件（`\includegraphics` 引用），避免内嵌 TikZ 代码**（便于替换/调整，利于文字不超出图形）
 
 ### 步骤 6 — 论文撰写 → `paper/main.tex`
 - 读 `references/05-论文写作.md`，用 `templates/paper/main.tex` 骨架
@@ -146,25 +145,25 @@ cumcm-2026/            # 示例目录名，以用户指定为准
 - **按 `references/04-图表规范.md` 的插入时机放图表**：每章放对应图（问题分析流程图/模型准备态势图/每问流程+结果图/灵敏度图），图前有引导、图后必有解释，连续图表间必须有文字，正文解释文字多于图表
 - ✅ 检查点（approve，Type-B 由用户判定）：用户批准后继续
 
-### 步骤 7 — 编译 PDF + 导出 Word
+### 步骤 7 — 编译 PDF
 - 读 `references/06-编译与合规.md`
-- **Word**：用 pandoc 由 LaTeX 导出 `paper/main.docx`（`pandoc main.tex -o main.docx`）——已实测可用
+- **只出 PDF**：用 xelatex 本地编译 `paper/main.pdf`（参赛提交）；**不再导出 .docx / Word 版**
 - **PDF**：优先本机本地编译（xelatex，见「环境预置」，本机已装 MiKTeX 25.12）；本地不可用时回退 Overleaf / TeX Live.net（上传 main.tex + figures/，编译器选 XeLaTeX，下载 main.pdf）
 - **合规检查**：跑 `python scripts/compliance_check.py paper [paper/main.pdf]`，要求无 FAIL（摘要≤1页/页码页脚中部/图表居中/每条文献被\cite/页边距/匿名/图表明细/AI工具使用声明）
-- **同步纪律**：每次改 main.tex 后重编 PDF（检查退出码与 log）+ 重导 Word + 重跑合规；Windows 控制台先 `$env:PYTHONIOENCODING="utf-8"`（详见 references/06、12）
-- ✅ 检查点（Type-A）：PDF 与 Word 都成功生成，且合规检查无 FAIL，用户批准进入步骤 8
+- **同步纪律**：每次改 main.tex 后重编 PDF（检查退出码与 log）+ 重跑合规；Windows 控制台先 `$env:PYTHONIOENCODING="utf-8"`（详见 references/06、12）
+- ✅ 检查点（Type-A）：PDF 成功生成，且合规检查无 FAIL，用户批准进入步骤 8
 
 ### 步骤 8 — 改进循环 → 修订终稿
 - 读 `references/07-改进循环.md`
 - ① **Type-A 机器审计**：
   - **求解交付审计**（先做）：跑 `python scripts/solution_audit.py <工作区> --mode deliverable`，要求 PASS（每问代码/结果/官方附件齐全，resultN.xlsx 非空非模板且表头/列序合规，硬约束由全模型结果满足）；优化题再跑 `--mode optimization`（代理保真度、范式切换、预算、空/中断误判），要求 PASS
   - 证据预检：把摘要/结论里的关键数字整理成 `claims.json`，跑 `python scripts/evidence_check.py <工作区> --batch claims.json`，要求全部 `verified`
-  - 页数/公式渲染/图表引用/匿名/参考文献/AI工具使用声明 逐项机器检查（PDF 与 Word 各查一遍）
+  - 页数/公式渲染/图表引用/匿名/参考文献/AI工具使用声明 逐项机器检查（查 PDF）
 - ② **Type-B 验收**：按 `PAPER_ACCEPTANCE_CONTRACT.md` 逐条核对，**由用户判定**未过项；列出未过项 → 修复 → 重编译 → 复验
 - ③ 可选：若用户提供另一个模型的 API，可做独立审稿（审稿人**直接读原始文件**，不喂摘要/不引导结论）
 - ④ **支撑材料收集**：跑 `python scripts/collect_materials.py <工作区>`，生成 `materials/`（源程序+中间图表+结果数据+附录A/B清单+**AI工具使用详情** `AI工具使用详情.pdf`，使用 AI 时必含，见 `references/13-AI工具使用规范.md`）
 - **停止条件 = Type-A 全过 + 用户验收通过**（含 `solution_audit.py` 与 `evidence_check.py` 全过、每问有全模型结果、全部官方附件存在且合规）。Codex 不得以"我觉得改好了"为由停止。
-- **交付口径（只交 3 样）**：① `paper/main.docx`（Word 论文）② `paper/main.pdf`（PDF 论文）③ `materials/`（支撑材料文件夹）；其余中间产物留在过程目录不上交
+- **交付口径（只交 2 样）**：① `paper/main.pdf`（PDF 论文）② `materials/`（支撑材料文件夹）；其余中间产物留在过程目录不上交
 
 ## 硬性规则
 
@@ -179,9 +178,9 @@ cumcm-2026/            # 示例目录名，以用户指定为准
 - 图表配色专业、灰度可区分（若需打印评审则提供灰度兼容版本）；正确性规则必守，风格规则可商量
 - 论文必须匿名（不出现姓名/学校/指导教师），正文（不含参考文献与附录）≤ 30 页，25 页最好
 - **AI 工具声明**：论文在参考文献前有「AI工具使用声明」（本 skill 默认「使用 AI」版）；使用 AI 则支撑材料须含 `AI工具使用详情.pdf`（命名固定，含工具/版本/用途/提示方式/采纳与核验）
-- **终稿双格式交付**：PDF（参赛提交）+ Word（`main.docx`，由 LaTeX 经 pandoc 导出；导出的 Word 是内容骨架，最终按学校模板微调）
-- **交付口径 3 样**：Word 论文 + PDF 论文 + 支撑材料文件夹（`materials/`）；参考文献 ≥8 条且每条正文有 \\cite，无官网/组委会条目
+- **只交付 PDF**：`paper/main.pdf`（参赛提交）+ 支撑材料文件夹（`materials/`）；不再导出 Word（.docx）
+- **交付口径 2 样**：PDF 论文 + 支撑材料文件夹（`materials/`）；参考文献 ≥8 条且每条正文有 \\cite，无官网/组委会条目
 - A 题优先机理建模：守恒/平衡方程 → 数值求解 → 灵敏度与稳定性分析，避免纯数据拟合
 - 论文必须包含**公式推导过程**（禁止只贴最终公式）；全题配技术路线图 + 工作机理示意图；每个已求解子问题默认至少 3 张图（工作机理示意图 + 算法流程图 + 结果图）；图表必须在正文有引导、有解释、有编号引用
 - **问题分析必写“总体分析 + 逐问五步法”**：2.1 总体分析（本质归类/核心矛盾与耦合主线/量级观察与风险锁定）+ 每问“机理层为什么”（含数值佐证），禁止只复述求解路线；范式与自查清单见 `references/05-论文写作.md`，骨架见 `templates/paper/main.tex`
-- 完成全部 8 步后，向用户输出：终稿路径（PDF + Word）、关键结果摘要、验收契约判定结果、待人工核对的点
+- 完成全部 8 步后，向用户输出：终稿路径（PDF）、关键结果摘要、验收契约判定结果、待人工核对的点

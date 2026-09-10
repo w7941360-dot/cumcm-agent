@@ -44,7 +44,7 @@ plot(x, y1, '-', 'Color', colors(1,:), 'LineWidth', 1.2); hold on;
 plot(x, y2, '--', 'Color', colors(2,:), 'LineWidth', 1.2);
 xlabel('x (m)'); ylabel('T (°C)'); grid on; set(gca,'FontSize',11);
 legend('方案1','方案2','Location','best');
-exportgraphics(fig, 'fig_xxx.png', 'Resolution', 300);       % LaTeX 与 Word 均用 PNG
+exportgraphics(fig, 'fig_xxx.png', 'Resolution', 300);       % 论文插图用 PNG（≥300 dpi）
 ```
 - **彩色/灰度均可**：默认专业彩色（Okabe-Ito / parula 色板）；若需黑白打印，用线型（实/虚/点）+ 标记区分，并 `colormap(gray)` 预览确认可读
 - 热图/曲面：`colormap('parula')` 或 `turbo`；**禁止 jet/rainbow 彩虹色**
