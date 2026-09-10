@@ -1,6 +1,6 @@
 # cumcm-agent — 国赛数学建模全流程助手（Codex Skill）
 
-全国大学生数学建模竞赛（CUMCM，国赛）全流程自动执行助手：赛题分析 → 建模求解 → 编程实现 → 图表生成 → 论文撰写（LaTeX）→ 编译 PDF + 导出 Word → 证据审计与验收。
+全国大学生数学建模竞赛（CUMCM，国赛）全流程自动执行助手：赛题分析 → 建模求解 → 编程实现 → 图表生成 → 论文撰写（LaTeX）→ 编译 PDF → 证据审计与验收。
 
 ## 特点
 
@@ -12,7 +12,7 @@
 - **门禁分级**：机器可查（Type-A）自动判定，质量判断（Type-B）由用户判定——"可 DRIVE，不可 ACQUIT"
 - **证据预检**：防编造数字（`scripts/evidence_check.py`，确定性检查论文数字是否真实存在于结果文件）
 - **输入处理**：赛题 PDF 自动提取文本 + 原始数据 xlsx 自动探查（`scripts/process_inputs.py`）
-- **双格式交付 + 3 样出口**：Word 论文 + PDF 论文 + 支撑材料文件夹（`materials/`，collect_materials.py 自动收集）
+- **交付 2 样**：PDF 论文 + 支撑材料文件夹（`materials/`，collect_materials.py 自动收集）
 - **自动合规检查**：`compliance_check.py`（摘要≤1页 / 正文≤30页且不含参考文献与附录 / 页码页脚中部 / 图表居中 / 每条文献被\\cite / 页边距 / 匿名）
 - **优化求解治理（通用）**：全链路矩阵 + 搜索空间设计（先理论后数值）+ 硬约束进入搜索（可行性优先）+ 代理保真度门禁 + 范式枚举与切换 + 多阶段自由度扩展（`references/02`、`references/11`）
 - **求解验收契约（早期）**：步骤 1-2 定「什么样算求解成功」（每问必答量/硬约束/官方附件/代理阈值/预算/不可接受状态），先于论文契约（`templates/SOLUTION_ACCEPTANCE_CONTRACT.md`）
@@ -30,7 +30,7 @@
 |---|---|
 | 工作流管理（新建科研/竞赛流水线） | 8 步流水线 + 断点续跑（工作区即状态）+ 每步检查点 |
 | 选题与数据辅助建模 | 赛题 PDF 自动提取 + xlsx 数据探查（`scripts/process_inputs.py`）+ 多题六维选题评估（`references/01`） |
-| 内置 LaTeX 一键编译 | 本地 xelatex（MiKTeX）+ pandoc 导出 Word + `compliance_check.py` 自动合规 |
+| 内置 LaTeX 一键编译 | 本地 xelatex（MiKTeX）+ `compliance_check.py` 自动合规 |
 | 各类竞赛 LaTeX 模板 | CUMCM 模板（`templates/paper/main.tex`）；更多赛事模板见 zhanwen/MathModel、MathModelAgent 模板族 |
 | 建模求解引擎 | Python 与 MATLAB（R2025b）双一等引擎，求解与出图一致，可按偏好选用/混合 |
 
@@ -55,7 +55,7 @@ C:\Users\<你的用户名>\.codex\skills\cumcm-agent\
 
 > 用 cumcm-agent 跑国赛 A 题全流程，赛题：[贴赛题/传 PDF]
 
-比赛当天流程：输入处理（PDF+xlsx）→ 赛题分析 → 建模（你反馈）→ 编程跑数 → 图表 → 定验收契约 → 论文 → PDF+Word → 证据审计+验收。
+比赛当天流程：输入处理（PDF+xlsx）→ 赛题分析 → 建模（你反馈）→ 编程跑数 → 图表 → 定验收契约 → 论文 → PDF → 证据审计+验收。
 
 ## 目录结构
 
